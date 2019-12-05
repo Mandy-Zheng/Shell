@@ -19,15 +19,13 @@ char ** parse(char * args){
     i++;
     part=strsep(&args," ");
   }
-  command[i]=0;
+  command[i]="\0";
   return command;
 }
 void executing(char ** command){
   if(fork()==0){
     execvp(command[0],command);
   }else{
-    printf("before\n");
     wait(NULL);
-    printf("after\n");
   }
 }
