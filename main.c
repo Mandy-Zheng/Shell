@@ -8,9 +8,10 @@ int main(int argc, char const *argv[]) {
     char ** command=parse(args);
     printf("%d\n",lengthArgs(command));
     if(lengthArgs(command)>0){
-      printf("sad\n");	
+      printf("sad\n");
       executing(command);
     }
+    fgets(args, 1000, stdin);
   }
   return 0;
 }
