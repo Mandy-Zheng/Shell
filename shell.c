@@ -13,6 +13,7 @@ char ** parse(char * args){
   char * part=strsep(&args, " ");
   command[0]=part;
   int i=1;
+  part=strsep(&args, " ");
   while (part!=NULL){
     command[i]=part;
     i++;
