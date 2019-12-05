@@ -9,6 +9,9 @@ int main(int argc, char const *argv[]) {
     printf("%d\n",lengthArgs(command));
     if(lengthArgs(command)>0){
       printf("sad\n");
+      for (size_t i = 0; i < lengthArgs; i++) {
+        printf("%d, %s \n",i,command[i]);
+      }
       executing(command);
     }
     fgets(args, 1000, stdin);
