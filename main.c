@@ -3,6 +3,8 @@
 int main(int argc, char const *argv[]) {
   char * args=calloc(sizeof(char),1000);
   fgets(args, 1000, stdin);
+  int argslen=strlen(args);
+  args[argslen-1]='\0';
   printf("%s\n",args);
   while(strcmp(args,"exit\n")!=0){
     char ** command=parse(args);
@@ -16,6 +18,8 @@ int main(int argc, char const *argv[]) {
       executing(command);
     }
     fgets(args, 1000, stdin);
+    argslen=strlen(args);
+    args[argslen-1]='\0';
   }
   return 0;
 }
