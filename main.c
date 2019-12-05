@@ -6,7 +6,7 @@ int main(int argc, char const *argv[]) {
   while(strcmp(args,"exit\n")!=0){
     char ** command=parse(args);
     if(lengthArgs(command)>0){
-      executing(args);
+      executing(command);
     }
   }
   return 0;

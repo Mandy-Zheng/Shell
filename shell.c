@@ -11,7 +11,7 @@ char ** parse(char * args){
   char ** command=calloc(sizeof(char *),100);
   int i=0;
   char * part;
-  while ((part=strsep(args," "))==NULL){
+  while ((part=strsep(&args," "))==NULL){
     command[i]=part;
     i++;
   }
