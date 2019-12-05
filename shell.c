@@ -19,7 +19,7 @@ char ** parse(char * args){
     i++;
     part=strsep(&args," ");
   }
-  command[i]="\0";
+  command[i]=0;
   return command;
 }
 void executing(char ** command){
