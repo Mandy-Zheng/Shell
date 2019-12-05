@@ -1,6 +1,6 @@
 #include "shell.h"
 int lengthArgs(char * args[]){
-  char ** command=calloc(sizeof(char *)*100);
+  char ** command=calloc(sizeof(char *),100);
   command=strsep(args," ");
   int i=0;
   int length=0;
