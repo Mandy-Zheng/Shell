@@ -10,8 +10,9 @@ int lengthArgs(char **command){
 }
 char ** parse(char * args){
   char ** command=calloc(sizeof(char *),100);
-  int i=0;
   char * part=strsep(&args, " ");
+  command[0]=part;
+  int i=1;
   while (part!=NULL){
     command[i]=part;
     i++;
@@ -23,7 +24,6 @@ char ** parse(char * args){
 void executing(char ** command){
   if(fork()==0){
     execvp(command[0],command);
-    exit(0);
   }else{
     printf("before\n");
     wait(NULL);
