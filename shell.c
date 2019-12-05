@@ -23,6 +23,7 @@ char ** parse(char * args){
 void executing(char ** command){
   if(fork()==0){
     execvp(command[0],command);
+    exit(0);
   }else{
     printf("before\n");
     wait(NULL);
