@@ -19,10 +19,12 @@ char ** parse(char * args){
     i++;
     part=strsep(&args," ");
   }
-  command[i]=0;
+  command[i]="\0";
+  printf("\n%s\n",command[i]);
   return command;
 }
 void executing(char ** command){
+  printf("first element: %s last element: %s\n",command[0],command[lengthArgs(command)+1]);
   if(fork()==0){
     execvp(command[0],command);
   }else{
