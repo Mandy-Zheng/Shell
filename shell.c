@@ -1,8 +1,7 @@
 #include "shell.h"
 int lengthArgs(char * args[]){
   char ** command=calloc(sizeof(char *)*100);
-  strsep(args," ");
-  printf("%s\n",args[0] );
+  command=strsep(args," ");
   int i=0;
   int length=0;
   while(command[i]!="\0"){
@@ -11,7 +10,7 @@ int lengthArgs(char * args[]){
   return length;
 }
 void parse(char * args[]){
-  char ** command=calloc(sizeof(char *)*100);
+  char ** command=calloc(sizeof(char *),100);
   command=strsep(args," ");
   if(fork()==0){
     execvp(command[0],command);
