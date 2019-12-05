@@ -1,17 +1,24 @@
 #include "shell.h"
-int lengthArgs(char * args[]){
-  char ** command=calloc(sizeof(char *),100);
-  command=strsep(args," ");
+int lengthArgs(char **command){
   int i=0;
   int length=0;
-  while(command[i]!="\0"){
+  while(strcmp(command[i],"\0")!=0){
     length++;
   }
   return length;
 }
-void parse(char * args[]){
+char ** parse(char * args){
   char ** command=calloc(sizeof(char *),100);
-  command=strsep(args," ");
+  int i=0;
+  char * part;
+  while ((part=strsep(args," "))==NULL){
+    command[i]=part;
+    i++;
+  }
+  command[i]="\0";
+  return command;
+}
+void executing(char ** command){
   if(fork()==0){
     execvp(command[0],command);
   }else{

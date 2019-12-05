@@ -8,6 +8,7 @@
 #include <string.h>
 #include <math.h>
 #include <unistd.h>
-#include <sys/wait.h>
-int lengthArgs(char * args[]);
-void parse(char * args[]);
+//#include <sys/wait.h>
+int lengthArgs(char **command);
+char ** parse(char * args);
+void executing(char ** command);
