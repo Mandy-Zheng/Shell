@@ -1,7 +1,8 @@
 #include "shell.h"
 int lengthArgs(char * args[]){
   char ** command=calloc(sizeof(char *)*100);
-  command=strsep(args," ");
+  strsep(args," ");
+  printf("%s\n",args[0] );
   int i=0;
   int length=0;
   while(command[i]!="\0"){
