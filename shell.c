@@ -21,6 +21,9 @@ char ** parseMulti(char * args){
   char * onecommand=args;
   for (size_t i = 0; part != NULL; i++) {
     multicommand[i]= strsep(&onecommand,";");
+    if(multicommand[i][0]==' '){
+      multicommand[i]= strsep(&multicommand," ");
+    }
   }
   return multicommand;
 }
