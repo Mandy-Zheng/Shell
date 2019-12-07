@@ -30,10 +30,10 @@ char ** parseMulti(char * args){
       multicommand[i][len-1]='\0';
     }
     int j=0;
-    while (j<strlen(multicommand[i]) || multicommand[i][strlen(multicommand[i])-1]!=' '){
+    while (j<strlen(multicommand[i]) || multicommand[i][j]!=' '){
       j++;
    }
-   multicommand[i][strlen(j]='\0';
+   multicommand[i][j]='\0';
   }
   return multicommand;
 }
