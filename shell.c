@@ -19,10 +19,10 @@ char ** parse(char * args){
 char ** parseMulti(char * args){
   char ** multicommand=calloc(sizeof(char*),100);
   char * onecommand=args;
-  for (size_t i = 0; part != NULL; i++) {
+  for (size_t i = 0; onecommand != NULL; i++) {
     multicommand[i]= strsep(&onecommand,";");
     if(multicommand[i][0]==' '){
-      multicommand[i]= strsep(&multicommand," ");
+      multicommand[i]= strsep(&multicommand[i]," ");
     }
   }
   return multicommand;
