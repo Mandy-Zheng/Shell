@@ -29,12 +29,11 @@ char ** parseMulti(char * args){
       }
       multicommand[i][len-1]='\0';
     }
-    if (multicommand[i][strlen(multicommand[i])-1]==' '){
-      printf("ajfioaidfj\n");
-      printf("[%s]\n",multicommand[i]);
-      multicommand[i][strlen(multicommand[i])-1]='\0';
-      printf("[%s]\n",multicommand[i]);
+    int j=0;
+    while (j<strlen(multicommand[i]) || multicommand[i][strlen(multicommand[i])-1]!=' '){
+      j++;
    }
+   multicommand[i][strlen(j]='\0';
   }
   return multicommand;
 }
