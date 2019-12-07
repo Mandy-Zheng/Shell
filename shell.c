@@ -13,6 +13,11 @@ char ** parse(char * args){
   char * part=args;
   for (size_t i = 0; part!=NULL; i++) {
     command[i]= strsep(&part," ");
+    int j=0;
+    while (j<strlen(command[i]) &&  command[i][j]!=' '){
+      j++;
+    }
+    command[i][j]='\0';
   }
   return command;
 }
@@ -29,13 +34,6 @@ char ** parseMulti(char * args){
       }
       multicommand[i][len-1]='\0';
     }
-    int j=0;
-    printf("first\n");
-    while (j<strlen(multicommand[i]) &&  multicommand[i][j]!=' '){ 
-      j++;
-   }
-    multicommand[i][j]='\0';
-  }
   return multicommand;
 }
 void executing(char ** command){
