@@ -23,6 +23,7 @@ char ** parseMulti(char * args){
     multicommand[i]= strsep(&onecommand,";");
     if(multicommand[i][0]==' '){
       multicommand[i]= strsep(&multicommand[i]," ");
+      printf(multicommand[i]);
     }
   }
   return multicommand;
@@ -33,4 +34,5 @@ void executing(char ** command){
   }else{
     wait(NULL);
   }
+  printf("\n");
 }
