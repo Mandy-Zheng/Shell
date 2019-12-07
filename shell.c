@@ -13,11 +13,9 @@ char ** parse(char * args){
   char * part=args;
   for (size_t i = 0; part!=NULL; i++) {
     command[i]= strsep(&part," ");
-    int j=0;
-    while (j<strlen(command[i]) &&  command[i][j]!=' '){
-      j++;
+    if (strlen(command[i])==0){
+      command[i]=NULL;
     }
-    command[i][j]='\0';
   }
   return command;
 }
@@ -26,7 +24,6 @@ char ** parseMulti(char * args){
   char * onecommand=args;
   for (size_t i = 0; onecommand != NULL; i++) {
     multicommand[i]=strsep(&onecommand,";");
-    printf("[%s]\n",multicommand[i]);
     if(multicommand[i][0]==' '){
       int len=strlen(multicommand[i]);
       for (size_t j=0;j<len-1;j++){
@@ -34,6 +31,7 @@ char ** parseMulti(char * args){
       }
       multicommand[i][len-1]='\0';
     }
+  }
   return multicommand;
 }
 void executing(char ** command){
