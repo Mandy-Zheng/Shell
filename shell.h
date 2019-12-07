@@ -12,3 +12,4 @@
 int lengthArgs(char **command);
 char ** parse(char * args);
 void executing(char ** command);
+char ** parseMulti(char * args);

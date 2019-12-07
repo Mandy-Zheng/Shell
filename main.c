@@ -6,10 +6,12 @@ int main(int argc, char const *argv[]) {
     printf("/Shell$ " );
     fgets(args, 1000, stdin);
     args[strlen(args)-1]='\0';
-    char ** command=parse(args);
-    printf("%d\n",lengthArgs(command));
-    if(lengthArgs(command)>0){
-      executing(command);
+    char ** commandmulti=parseMulti(args);
+    if(lengthArgs(commandmulti)>0){
+      for (size_t i = 0; i < lengthArgs(commandmulti); i++) {
+        char ** command=commandmulti[i];
+        executing(command);
+      }
     }
   }
   return 0;

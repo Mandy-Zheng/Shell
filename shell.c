@@ -16,6 +16,14 @@ char ** parse(char * args){
   }
   return command;
 }
+char ** parseMulti(char * args){
+  char ** multicommand=calloc(sizeof(char*),100);
+  char * onecommand=args;
+  for (size_t i = 0; part != NULL; i++) {
+    multicommand[i]= strsep(&onecommand,";");
+  }
+  return multicommand;
+}
 void executing(char ** command){
   if(fork()==0){
     execvp(command[0],command);
