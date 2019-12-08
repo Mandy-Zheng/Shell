@@ -13,3 +13,6 @@ int lengthArgs(char **command);
 char ** parse(char * args);
 void executing(char ** command);
 char ** parseMulti(char * args);
+void simpleRedirect(char * args,char sign);
+char ** redirect_parse(char * args, char sign);
+int isRedirect(char * args);
