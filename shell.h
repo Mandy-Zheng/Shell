@@ -9,6 +9,7 @@
 #include <math.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <fcntl.h>
 int lengthArgs(char **command);
 char ** parse(char * args);
 void executing(char ** command);
