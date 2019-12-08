@@ -9,8 +9,9 @@ int main(int argc, char const *argv[]) {
     char ** commandmulti=parseMulti(args);
     if(lengthArgs(commandmulti)>0){
       for (size_t i = 0; i < lengthArgs(commandmulti); i++) {
-        char ** command=parse(commandmulti[i]);
-        executing(command);
+        if(!isRedirect(commandmulti[i])){
+          char ** command=parse(commandmulti[i]);
+          executing(command);
       }
     }
   }
