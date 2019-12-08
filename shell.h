@@ -17,3 +17,4 @@ char ** parseMulti(char * args);
 void simpleRedirect(char * args,char sign);
 char ** redirect_parse(char * args, char sign);
 int isRedirect(char * args);
+char * strip(char * args, char sign);

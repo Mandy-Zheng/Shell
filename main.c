@@ -12,6 +12,7 @@ int main(int argc, char const *argv[]) {
         if(!isRedirect(commandmulti[i])){
           char ** command=parse(commandmulti[i]);
           executing(command);
+	}
       }
     }
   }

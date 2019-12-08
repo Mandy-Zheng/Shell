@@ -15,6 +15,8 @@ char ** parse(char * args){
     command[i]= strsep(&part," ");
     if (strlen(command[i])==0){
       command[i]=NULL;
+    }else{
+      strip(command[i],' ');  
     }
   }
   return command;
@@ -43,8 +45,8 @@ void executing(char ** command){
   printf("\n");
 }
 void simpleRedirect(char * args,char sign){
-  char ** command = redirect_parse(args,sign);
-  if(sign=='>'){
+  char ** command = redirect_parse(args,sign); 
+  if(sign=='>'){ 
     if(fork()==0){
       int into = open(command[1],O_WRONLY | O_CREAT, 0644); 
       dup2(into, STDOUT_FILENO);
@@ -55,22 +57,43 @@ void simpleRedirect(char * args,char sign){
     }
   }else{
     if(fork()==0){
-      int out = open(command[1],O_WRONLY | O_CREAT, 0644);
-      dup2(STDIN_FILENO,out);
+      int into = open(command[1],O_RDONLY, 0644);
+      dup2(into,STDIN_FILENO);
       char ** command2 = parse(command[0]);
       execvp(command2[0],command2);
+    }else{
+      wait(NULL);
+    }
   }
 }
 char ** redirect_parse(char * args, char sign){
   char ** command=calloc(sizeof(char *),100);
   char * part=args;
   for (size_t i = 0; part!=NULL; i++) {
-    command[i]= strsep(&part,sign);
+    command[i]= strsep(&part,&sign);
     if (strlen(command[i])==0){
       command[i]=NULL;
+     }
+    if(i!=0){
+       strip(command[i],' ');
+     }
+   }
+  return command;
+}
+char * strip(char * args, char sign){
+  int start=-1;
+  for(size_t i = 0; i < strlen(args);i++){
+    if(args[i]==sign){
+      start=i;
+    }
+    if(i>start && start!=-1){
+      args[i-1]=args[i];
+      if(i==strlen(args)-1){
+        args[i]='\0';
+      }
     }
   }
-  return command;
+  return args;
 }
 //how many max?
 int isRedirect(char * args){
@@ -131,8 +154,7 @@ int isRedirect(char * args){
       }
 
     }else{
-
-    }
-    return 1;
-  }*/
+*/
+ }
+  return 0;
 }
