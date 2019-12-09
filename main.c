@@ -9,6 +9,7 @@ int main(int argc, char const *argv[]) {
     char ** commandmulti=parseMulti(args);
     printf("%s\n",commandmulti[0]);
     if(lengthArgs(commandmulti)>0){
+      set_color(DarkRed);
       for (size_t i = 0; i < lengthArgs(commandmulti); i++) {
         char ** command = parse(commandmulti[i]);
         if(!isRedirect(commandmulti[i]) &&
