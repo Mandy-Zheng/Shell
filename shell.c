@@ -1,5 +1,4 @@
 #include "shell.h"
-  enum color {Black, DarkRed, DarkGreen, DarkYellow, DarkBlue, Purple, DarkCyan, LightGrey, DarkGrey, Red, Green, Yellow, Blue, Pink, Cyan, White};
 int lengthArgs(char **command){
   int i=0;
   int length=0;
