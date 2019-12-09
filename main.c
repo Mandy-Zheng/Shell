@@ -10,9 +10,10 @@ int main(int argc, char const *argv[]) {
     printf("%s\n",commandmulti[0]);
     if(lengthArgs(commandmulti)>0){
       for (size_t i = 0; i < lengthArgs(commandmulti); i++) {
+        char ** command = parse(commandmulti[i]);
         if(!isRedirect(commandmulti[i]) &&
-           !isChangeDirectory(parse(commandmulti[i]))){
-          executing(parse(commandmulti[i]));
+           !isChangeDirectory(command)){
+             executing(command);
 	      }
       }
     }
