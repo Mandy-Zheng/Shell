@@ -7,15 +7,12 @@ int main(int argc, char const *argv[]) {
     fgets(args, 1000, stdin);
     args[strlen(args)-1]='\0';
     char ** commandmulti=parseMulti(args);
+    printf("%s\n",commandmulti[0]);
     if(lengthArgs(commandmulti)>0){
       for (size_t i = 0; i < lengthArgs(commandmulti); i++) {
-        if(isChangeDirectory(commandmulti[i])){
-          
-        }
         if(!isRedirect(commandmulti[i])){
-          char ** command=parse(commandmulti[i]);
-          executing(command);
-	}
+          executing(parse(commandmulti[i]));
+	      }
       }
     }
   }
