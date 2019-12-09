@@ -95,6 +95,29 @@ char * strip(char * args, char sign){
   }
   return args;
 }
+int isChangeDirectory(char ** command){
+    if(!strcmp(command[0],"cd")){
+      printf("yoo");
+      changeDirectory(command);
+      return 1;
+    }
+    return 0;
+}
+
+int changeDirectory(char ** command){
+  if (lengthArgs(command) > 2){
+    printf("cd: too many arguments");
+    return 1;
+  }
+  else if (chdir(command[1]) != 0){
+    printf("cd: %s: No such file or directory\n",command[1]);
+    return 1;
+  }
+  else{
+    return 1;
+  }
+  return 0;
+}
 //how many max?
 int isRedirect(char * args){
   for (size_t i = 1; i < strlen(args)-1; i++) {
