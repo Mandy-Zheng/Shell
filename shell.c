@@ -184,3 +184,6 @@ int isRedirect(char * args){
  }
   return 0;
 }
+void set_color(unsigned char color) {
+  printf("\033[0;38;5;%hhum", color);
+}
