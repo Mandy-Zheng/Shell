@@ -13,7 +13,6 @@
 enum color {Black, DarkRed, DarkGreen, DarkYellow, DarkBlue, Purple, DarkCyan, LightGrey, DarkGrey, Red, Green, Yellow, Blue, Pink, Cyan, White};
 int lengthArgs(char **command);
 char ** parse(char * args);
-void currentDirectory(char * dir_path);
 void executing(char ** command);
 char ** parseMulti(char * args);
 void simpleRedirect(char * args,char sign);

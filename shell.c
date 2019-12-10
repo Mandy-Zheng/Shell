@@ -37,16 +37,14 @@ char ** parseMulti(char * args){
   return multicommand;
 }
 void executing(char ** command){
-  if(fork()==0){
-    execvp(command[0],command);
-  }else{
-    wait(NULL);
+  if (!isChangeDirectory(command)){
+    if(fork()==0){
+      execvp(command[0],command);
+    }else{
+      wait(NULL);
+    }
+    printf("\n");
   }
-  printf("\n");
-}
-void currentDirectory(char * dir_path){
-  getcwd(dir_path,sizeof(dir_path));
-  printf("%s\n",dir_path);
 }
 void simpleRedirect(char * args,char sign){
   char ** command = redirect_parse(args,sign);
@@ -120,6 +118,16 @@ int changeDirectory(char ** command){
     return 1;
   }
   return 0;
+}
+int isPipe(char ** command){
+  if(!strcmp(command[0],"|")){
+    performPipe(command, 0);
+    return 1;
+  }
+  return 0;
+}
+void performPipe(char ** command, int index){
+
 }
 //how many max?
 int isRedirect(char * args){
