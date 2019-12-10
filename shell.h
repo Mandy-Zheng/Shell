@@ -20,5 +20,7 @@ char ** redirect_parse(char * args, char sign);
 int isRedirect(char * args);
 int isChangeDirectory(char ** command);
 int changeDirectory(char ** command);
+int isPipe(char ** command);
+void performPipe(char ** command, int index);
 char * strip(char * args, char sign);
 void set_color(unsigned char color);
