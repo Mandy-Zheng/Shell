@@ -11,7 +11,6 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 enum color {Black, DarkRed, DarkGreen, DarkYellow, DarkBlue, Purple, DarkCyan, LightGrey, DarkGrey, Red, Green, Yellow, Blue, Pink, Cyan, White};
-void sighandler(int signo);
 int lengthArgs(char **command);
 char ** parse(char * args);
 void executing(char ** command);

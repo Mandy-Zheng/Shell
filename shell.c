@@ -1,17 +1,4 @@
 #include "shell.h"
-void sighandler(int signo){
-  char  c;
-  printf("OUCH, did you hit Ctrl-C?\n"
-         "Do you really want to quit? [y/n] ");
-  c = getchar();
-  while(c!= 'y' || c == 'Y'){
-    if (c == 'n' || c == 'N'){
-      return;
-    }
-    c = getchar();
-  }
-  exit(0);
-}
 int lengthArgs(char **command){
   int i=0;
   int length=0;
@@ -50,6 +37,9 @@ char ** parseMulti(char * args){
   return multicommand;
 }
 void executing(char ** command){
+  if(strcmp(command[0],"exit") == 0){
+    exit(0);
+  }
   if (!isChangeDirectory(command)){
     if(fork()==0){
       execvp(command[0],command);
