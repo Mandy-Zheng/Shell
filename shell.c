@@ -1,4 +1,9 @@
 #include "shell.h"
+void sighandler(int signo){
+   if(signo == 2){
+     printf("^C");
+   }
+}
 int lengthArgs(char **command){
   int i=0;
   int length=0;
@@ -119,16 +124,18 @@ int changeDirectory(char ** command){
   }
   return 0;
 }
+
 int isPipe(char ** command){
-  if(!strcmp(command[0],"|")){
-    performPipe(command, 0);
-    return 1;
+  for (size_t i = 0; i < lengthArgs(command); i++) {
+    if(!strcmp(command[0],"|")){
+      //performPipe(command, 0);
+      return 1;
+    }
   }
   return 0;
 }
-void performPipe(char ** command, int index){
-
-}
+// void performPipe(char ** command, int index){
+// }
 //how many max?
 int isRedirect(char * args){
   for (size_t i = 1; i < strlen(args)-1; i++) {
