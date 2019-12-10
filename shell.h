@@ -12,6 +12,7 @@
 #include <fcntl.h>
 int lengthArgs(char **command);
 char ** parse(char * args);
+void currentDirectory(char * dir_path);
 void executing(char ** command);
 char ** parseMulti(char * args);
 void simpleRedirect(char * args,char sign);

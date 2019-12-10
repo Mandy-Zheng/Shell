@@ -44,6 +44,10 @@ void executing(char ** command){
   }
   printf("\n");
 }
+void currentDirectory(char * dir_path){
+  getcwd(dir_path,sizeof(dir_path));
+  printf("%s\n",dir_path);
+}
 void simpleRedirect(char * args,char sign){
   char ** command = redirect_parse(args,sign);
   if(sign=='>'){
@@ -97,7 +101,6 @@ char * strip(char * args, char sign){
 }
 int isChangeDirectory(char ** command){
     if(!strcmp(command[0],"cd")){
-      printf("yoo");
       changeDirectory(command);
       return 1;
     }
