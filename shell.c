@@ -107,6 +107,9 @@ char ** redirect_parse(char * args, char sign){
      }
     if(i!=0){
        strip(command[i],' ');
+       if (strlen(command[i])==0){
+         command[i]=NULL;
+        }
      }
    }
   return command;
@@ -124,8 +127,16 @@ char * strip(char * args, char sign){
       }
     }
   }
+  for(size_t i = strlen(args)-1; i > = 0;i--){
+    if(args[i]==' '){
+      args[i]=='\0'
+    }else{
+      i=-1
+    }
+  }
   return args;
 }
+
 int isChangeDirectory(char ** command){
     if(!strcmp(command[0],"cd")){
       changeDirectory(command);
