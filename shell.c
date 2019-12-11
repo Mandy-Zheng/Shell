@@ -24,9 +24,8 @@ char ** parse(char * args){
 char ** parseMulti(char * args){
   char ** multicommand=calloc(sizeof(char*),100);
   char * onecommand=args;
-  char * holder=calloc(sizeof(char),1000);
   for (size_t i = 0; onecommand != NULL; i++) {
-    multicommand=strsep(&onecommand,";");
+    multicommand[i]=strsep(&onecommand,";");
     if(multicommand[i][0]==' '){
       int len=strlen(multicommand[i]);
       for (size_t j=0;j<len-1;j++){
@@ -72,28 +71,6 @@ void simpleRedirect(char * args,char sign){
     }
   }
 }
-void complexRedirect(char * args,char sign){
-  char ** command = redirect_parse(args,sign);
-  if(sign=='>'){
-    if(fork()==0){
-      int into = open(command[1],O_WRONLY | O_APPEND | O_CREAT, 0644);
-      dup2(into, STDOUT_FILENO);
-      char ** command2 = parse(command[0]);
-      execvp(command2[0],command2);
-    }else{
-      wait(NULL);
-    }
-  }else{
-    if(fork()==0){
-      int into = open(command[1],O_RDONLY, 0644);
-      dup2(into,STDIN_FILENO);
-      char ** command2 = parse(command[0]);
-      execvp(command2[0],command2);
-    }else{
-      wait(NULL);
-    }
-  }
-}
 char ** redirect_parse(char * args, char sign){
   char ** command=calloc(sizeof(char *),100);
   char * part=args;
@@ -104,9 +81,6 @@ char ** redirect_parse(char * args, char sign){
      }
     if(i!=0){
        strip(command[i],' ');
-       if (strlen(command[i])==0){
-         command[i]=NULL;
-        }
      }
    }
   return command;
@@ -124,16 +98,8 @@ char * strip(char * args, char sign){
       }
     }
   }
-  for(size_t i = strlen(args)-1; i > = 0;i--){
-    if(args[i]==' '){
-      args[i]=='\0'
-    }else{
-      i=-1
-    }
-  }
   return args;
 }
-
 int isChangeDirectory(char ** command){
     if(!strcmp(command[0],"cd")){
       changeDirectory(command);
@@ -171,11 +137,7 @@ int isPipe(char ** command){
 //how many max?
 int isRedirect(char * args){
   for (size_t i = 1; i < strlen(args)-1; i++) {
-    if(args[i]=='>' && args[i+1]=='>'|| args[i]=='<' && args[i+1]=='<'){
-      complexRedirect(args,args[i]);
-      return 1;
-    }
-    if(args[i]=='>' && args[i+1]!='>'|| args[i]=='<' && args[i+1]!='<'){
+    if(args[i]=='>' || args[i]=='<'){
       simpleRedirect(args,args[i]);
       return 1;
     }
