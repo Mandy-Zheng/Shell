@@ -24,3 +24,4 @@ int isPipe(char ** command);
 void performPipe(char ** command, int index);
 char * strip(char * args, char sign);
 void set_color(unsigned char color);
+void complexRedirect(char * args,char sign);
