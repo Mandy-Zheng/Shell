@@ -125,15 +125,32 @@ int changeDirectory(char ** command){
 
 int isPipe(char ** command){
   for (size_t i = 0; i < lengthArgs(command); i++) {
-    if(!strcmp(command[0],"|")){
-      //performPipe(command, 0);
+    if(!strcmp(command[i],"|")){
+      if(performPipe(command, i));
       return 1;
     }
   }
   return 0;
 }
-// void performPipe(char ** command, int index){
-// }
+int performPipe(char ** command, int index){
+  FILE *buffer;
+  char output[4096];
+
+  /* Open the command for reading. */
+  buffer = popen(command[i-1], "r");
+  if (fp == NULL) {
+    printf("Failed to run command\n" );
+    return 0;
+  }
+
+  /* Read the output a line at a time - output it. */
+  while (fgets(output, sizeof(output), buffer) != NULL) {
+    printf("%s", path);
+  }
+
+  /* close */
+  pclose(fp);
+}
 //how many max?
 int isRedirect(char * args){
   for (size_t i = 1; i < strlen(args)-1; i++) {
