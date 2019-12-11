@@ -20,16 +20,16 @@ int main(int argc, char const *argv[]) {
     fgets(args, 1000, stdin);
     if(args[0] !='\n'){
       args[strlen(args)-1]='\0';
-      char ** commandmulti=parseMulti(args);
-      if(lengthArgs(commandmulti)>0){
-
-        for (size_t i =0 ; i< lengthArgs(commandmulti);i++){
-          //strip(commandmulti[i],' ');
-          if(strlen(commandmulti[i])>0){
-            char ** command = parse(commandmulti[i]);
-            if(!isRedirect(commandmulti[i]) &&
-             !isPipe(command)){
-               executing(command);
+      if(!isRedirect(args)){
+        char ** commandmulti=parseMulti(args);
+        if(lengthArgs(commandmulti)>0){
+          for (size_t i =0 ; i< lengthArgs(commandmulti);i++){
+            //strip(commandmulti[i],' ');
+            if(strlen(commandmulti[i])>0){
+              char ** command = parse(commandmulti[i]);
+              if(!isPipe(command)){
+                 executing(command);
+               }
              }
           }
         }
