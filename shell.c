@@ -71,6 +71,30 @@ void simpleRedirect(char * args,char sign){
     }
   }
 }
+
+void complexRedirect(char * args,char sign){
+  char ** command = redirect_parse(args,sign);
+  if(sign=='>'){
+    if(fork()==0){
+      int into = open(command[1],O_WRONLY | O_APPEND | O_CREAT, 0644);
+      dup2(into, STDOUT_FILENO);
+      char ** command2 = parse(command[0]);
+      execvp(command2[0],command2);
+    }else{
+      wait(NULL);
+    }
+  }else{
+    if(fork()==0){
+      int into = open(command[1],O_RDONLY, 0644);
+      dup2(into,STDIN_FILENO);
+      char ** command2 = parse(command[0]);
+      execvp(command2[0],command2);
+    }else{
+      wait(NULL);
+    }
+  }
+}
+
 char ** redirect_parse(char * args, char sign){
   char ** multicommand=calloc(sizeof(char*),100);
   char * onecommand=args;
@@ -145,8 +169,12 @@ int isPipe(char ** command){
 //how many max?
 int isRedirect(char * args){
   for (size_t i = 1; i < strlen(args)-1; i++) {
-    if(args[i]=='>' || args[i]=='<'){
+    if(args[i]=='>' && args[i]=='>'|| args[i]=='<' && args[i]=='>'){
       simpleRedirect(args,args[i]);
+      return 1;
+    }
+    if(args[i]=='>' || args[i]=='<'){
+      complexRedirect(args,args[i]);
       return 1;
     }
     /*int gr=0;
