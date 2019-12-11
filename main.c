@@ -1,28 +1,18 @@
 #include "shell.h"
-static int  keepRunning;
 static void sighandler(int signo){
-  char  c; int go = 1;
-  printf("OUCH, did you hit Ctrl-C?\n"
-         "Do you really want to quit? [y/n] ");
-  c = getchar();
-  do {
-    printf("%s\n",c);
-    if (c == 'n' || c == 'N'){
-      go = 0;
-    } else if((c == 'y' || c == 'Y')){
-      printf("WUTHTE");
-      keepRunning = 0;
-      go = 0;
-    }
-    c = getchar();
-  } while (go);
+  char dir_path[512];
+  set_color(14);
+  getcwd(dir_path,sizeof(dir_path));
+  printf("\n%s",dir_path);
+  printf("\n$ ");
+  set_color(15);
+  fflush(stdout);
 }
 int main(int argc, char const *argv[]) {
-  keepRunning = 1;
   char * args=calloc(sizeof(char),1000);
   char dir_path[512];
   signal(SIGINT,sighandler);
-  while(keepRunning){
+  while(1){
     set_color(Cyan);
     getcwd(dir_path,sizeof(dir_path));
     printf("%s\n$ ",dir_path);
