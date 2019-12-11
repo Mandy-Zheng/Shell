@@ -72,18 +72,19 @@ void simpleRedirect(char * args,char sign){
   }
 }
 char ** redirect_parse(char * args, char sign){
-  char ** command=calloc(sizeof(char *),100);
-  char * part=args;
-  for (size_t i = 0; part!=NULL; i++) {
-    command[i]= strsep(&part,&sign);
-    if (strlen(command[i])==0){
-      command[i]=NULL;
-     }
-    if(i!=0){
-       strip(command[i],' ');
-     }
-   }
-  return command;
+  char ** multicommand=calloc(sizeof(char*),100);
+  char * onecommand=args;
+  for (size_t i = 0; onecommand != NULL; i++) {
+    multicommand[i]=strsep(&onecommand,&sign);
+    if(multicommand[i][0]==' '){
+      int len=strlen(multicommand[i]);
+      for (size_t j=0;j<len-1;j++){
+      	multicommand[i][j]= multicommand[i][j+1];
+      }
+      multicommand[i][len-1]='\0';
+    }
+  }
+  return multicommand;
 }
 char * strip(char * args, char sign){
   int start=-1;
