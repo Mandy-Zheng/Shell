@@ -12,7 +12,7 @@ int main(int argc, char const *argv[]) {
   char * args=calloc(sizeof(char),1000);
   char dir_path[512];
   signal(SIGINT,sighandler);
-  while(1){
+  while(args!="exit\n"){
     set_color(Cyan);
     getcwd(dir_path,sizeof(dir_path));
     printf("%s\n$ ",dir_path);

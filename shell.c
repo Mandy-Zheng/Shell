@@ -26,10 +26,7 @@ char ** parseMulti(char * args){
   char * onecommand=args;
   char * holder=calloc(sizeof(char),1000);
   for (size_t i = 0; onecommand != NULL; i++) {
-    holder=strsep(&onecommand,";");
-    if(holder != NULL){
-      multicommand[i]=holder;
-    }
+    multicommand=strsep(&onecommand,";");
     if(multicommand[i][0]==' '){
       int len=strlen(multicommand[i]);
       for (size_t j=0;j<len-1;j++){
