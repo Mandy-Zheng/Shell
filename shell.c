@@ -50,7 +50,7 @@ void executing(char ** command){
   }
 }
 void simpleRedirect(char * args,char sign){
-  char ** command = redirect_parse(args,sign);
+  char ** command = redirect_parse(args,&sign);
   if(sign=='>'){
     if(fork()==0){
       int into = open(command[1],O_WRONLY | O_CREAT, 0644);
@@ -73,7 +73,7 @@ void simpleRedirect(char * args,char sign){
 }
 
 void complexRedirect(char * args,char sign){
-  char ** command = redirect_parse(args,sign);
+  char ** command = redirect_parse(args,">>");
   if(sign=='>'){
     if(fork()==0){
       int into = open(command[1],O_WRONLY | O_APPEND | O_CREAT, 0644);
@@ -95,11 +95,11 @@ void complexRedirect(char * args,char sign){
   }
 }
 
-char ** redirect_parse(char * args, char sign){
+char ** redirect_parse(char * args, char * sign){
   char ** multicommand=calloc(sizeof(char*),100);
   char * onecommand=args;
   for (size_t i = 0; onecommand != NULL; i++) {
-    multicommand[i]=strsep(&onecommand,&sign);
+    multicommand[i]=strsep(&onecommand,sign);
     if(multicommand[i][0]==' '){
       int len=strlen(multicommand[i]);
       for (size_t j=0;j<len-1;j++){
