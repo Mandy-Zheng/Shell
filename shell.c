@@ -107,6 +107,9 @@ char ** redirect_parse(char * args, char * sign){
       }
       multicommand[i][len-1]='\0';
     }
+    if(strlen(multicommand[i])==0){
+      i--;
+    }
   }
   return multicommand;
 }
@@ -169,12 +172,12 @@ int isPipe(char ** command){
 //how many max?
 int isRedirect(char * args){
   for (size_t i = 1; i < strlen(args)-1; i++) {
-    if(args[i]=='>' && args[i]=='>'|| args[i]=='<' && args[i]=='>'){
-      simpleRedirect(args,args[i]);
+    if(args[i]=='>' && args[i+1]=='>'|| args[i]=='<' && args[i+1]=='>'){
+      complexRedirect(args,args[i]);
       return 1;
     }
     if(args[i]=='>' || args[i]=='<'){
-      complexRedirect(args,args[i]);
+      simpleRedirect(args,args[i]);
       return 1;
     }
     /*int gr=0;
