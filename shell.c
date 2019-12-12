@@ -36,11 +36,11 @@ char ** parseMulti(char * args){
   }
   return multicommand;
 }
-void executing(char ** command){
+void executing(char ** command, int * keepRunning){
   if(strcmp(command[0],"exit") == 0){
-    exit(0);
+    * keepRunning = 0;
   }
-  if (!isChangeDirectory(command)){
+  else if (!isChangeDirectory(command)){
     if(fork()==0){
       execvp(command[0],command);
     }else{
@@ -168,24 +168,23 @@ int isPipe(char ** command){
   return 0;
 }
 int performPipe(char ** command, int index){
-  FILE *buffer;
-  char output[4096];
+    FILE * read;
+    FILE * write;
+    char transfer[4096];
 
-  /* Open the command for reading. */
-  buffer = popen(command[i-1], "r");
-  if (fp == NULL) {
-    printf("Failed to run command\n" );
-    return 0;
+    read = popen(command[index-1],"r");
+    // if( p == NULL)
+    // {
+    //     printf("%s\n", );("Unable to open process");
+    //     return 1;
+    // }
+    fgets(transfer,sizeof(transfer),read);
+    pclose(read);
+    write = popen(command[index+1],"w");
+    fprintf(write, "%s", transfer);
+    pclose(write);
   }
 
-  /* Read the output a line at a time - output it. */
-  while (fgets(output, sizeof(output), buffer) != NULL) {
-    printf("%s", path);
-  }
-
-  /* close */
-  pclose(fp);
-}
 //how many max?
 int isRedirect(char * args){
   for (size_t i = 1; i < strlen(args)-1; i++) {

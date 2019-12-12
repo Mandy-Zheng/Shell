@@ -13,7 +13,7 @@
 enum color {Black, DarkRed, DarkGreen, DarkYellow, DarkBlue, Purple, DarkCyan, LightGrey, DarkGrey, Red, Green, Yellow, Blue, Pink, Cyan, White};
 int lengthArgs(char **command);
 char ** parse(char * args);
-void executing(char ** command);
+void executing(char ** command, int * keepRunning);
 char ** parseMulti(char * args);
 void simpleRedirect(char * args,char sign);
 char ** redirect_parse(char * args, char* sign);

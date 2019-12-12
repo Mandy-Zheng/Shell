@@ -1,4 +1,5 @@
 #include "shell.h"
+static int keepRunning = 1;
 static void sighandler(int signo){
   char dir_path[512];
   set_color(14);
@@ -12,7 +13,7 @@ int main(int argc, char const *argv[]) {
   char * args=calloc(sizeof(char),1000);
   char dir_path[512];
   signal(SIGINT,sighandler);
-  while(args!="exit\n"){
+  while(keepRunning){
     set_color(Cyan);
     getcwd(dir_path,sizeof(dir_path));
     printf("%s\n$ ",dir_path);
@@ -20,27 +21,17 @@ int main(int argc, char const *argv[]) {
     fgets(args, 1000, stdin);
     if(args[0] !='\n'){
       args[strlen(args)-1]='\0';
-<<<<<<< HEAD
-      char ** commandmulti=parseMulti(args);
-      if(lengthArgs(commandmulti)>0){
-        for (size_t i =0 ; i< lengthArgs(commandmulti);i++){
-          char ** command = parse(commandmulti[i]);
-          if(!isRedirect(commandmulti[i]) &&
-             !isPipe(command)){
-               executing(command);
-=======
       if(!isRedirect(args)){
         char ** commandmulti=parseMulti(args);
         if(lengthArgs(commandmulti)>0){
-          for (size_t i =0 ; i< lengthArgs(commandmulti);i++){
+          for (size_t i =0 ; i< lengthArgs(commandmulti) && keepRunning;i++){
             //strip(commandmulti[i],' ');
             if(strlen(commandmulti[i])>0){
               char ** command = parse(commandmulti[i]);
               if(!isPipe(command)){
-                 executing(command);
+                 executing(command,&keepRunning);
                }
              }
->>>>>>> 003dc21baed26d407f764a2452ecdb8eecaf6b22
           }
         }
       }
