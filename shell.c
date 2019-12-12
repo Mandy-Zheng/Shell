@@ -55,7 +55,8 @@ void simpleRedirect(char * args,char sign){
   char ** command = redirect_parse(args,&sign);
   if(sign=='>'){
     if(fork()==0){
-      int into = open(truncs(strip(command[1],' '),' '),O_WRONLY | O_CREAT, 0644);
+      command[1]=truncs(strip(command[1],' '),' ')
+      int into = open(command[1],O_WRONLY | O_CREAT, 0644);
       dup2(into, STDOUT_FILENO);
       char ** command2 = parse(command[0]);
       execvp(command2[0],command2);
