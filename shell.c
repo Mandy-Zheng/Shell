@@ -72,6 +72,19 @@ void simpleRedirect(char * args,char sign){
   }
 }
 
+void transitiveRedirect(char * args, char firstsign){
+  char ** commandfirst = redirect_parse(args,&firstsign);
+  if(firstsign=='>'){
+    if(fork()==0){
+      char ** commandsecond=redirect_parse(commandfirst[1], '<');
+      int into = open(commandsecond[0],O_WRONLY | O_CREAT, 0644);
+      dup2(into, STDOUT_FILENO);
+      char ** command2 = parse(commandfirst[0]);
+      execvp(command2[0],commandsecond[1]);
+    }else{
+      wait(NULL);
+    }
+}
 void complexRedirect(char * args,char sign){
   char ** command = redirect_parse(args,">>");
   if(sign=='>'){
@@ -171,69 +184,29 @@ int isPipe(char ** command){
 // }
 //how many max?
 int isRedirect(char * args){
+  int count=0;
+  char firstSign='\0';
   for (size_t i = 1; i < strlen(args)-1; i++) {
     if(args[i]=='>' && args[i+1]=='>'|| args[i]=='<' && args[i+1]=='>'){
       complexRedirect(args,args[i]);
       return 1;
     }
     if(args[i]=='>' || args[i]=='<'){
-      simpleRedirect(args,args[i]);
-      return 1;
+      if(firstSign=='\0'){
+        firstSign=args[i];
+      }
+      count++;
     }
-    /*int gr=0;
-    int ls=0;
-    int grgr=0;
-    int lsls=0;
-    int and=0;
-    int gr2=0;
-    int grgr2=0;
-    if(args[i]=='>' && args[i+1]=='>' && args[i-1]=='2'){
-      grgr2++;
-    }else if(args[i]=='>' && args[i-1]=='2'){
-      gr2++;
-    }else if(args[i]=='>' && args[i+1]=='>'){
-      grgr++;
-    }else if(args[i]=='<' && args[i+1]=='<'){
-      lsls++;
-    }else if(args[i]=='>' && args[i+1]=='>'){
-      grgr++;
-    }else if(args[i]=='&' && args[i+1]=='>'){
-      and++;
-    }else if(args[i]=='>'){
-      gr++;
-    }else if(args[i]=='<'){
-      ls++;
-    }
-  }
-  if(gr+grgr+gr2+grgr2+ls+lsls+and==0){
-    return 0;
-  }else{
-    if(gr+grgr+gr2+grgr2+ls+lsls+and==1){
-      if(gr>0){
-        simpleRedirect()
-      }
-      if(gr2>0){
-        errRedirect()
-      }
-      if(grgr>0){
-        complexRedirect()
-      }
-      if(grgr2>0){
-        errRedirect()
-      }
-      if(ls>0){
-        simpleRedirect()
-      }
-      if(lsls>0){
-        complexRedirect()
-      }
-      if(and>0){
-        specialRedirect()
-      }
-
-    }else{
-*/
  }
+ if(firstSign=='<' ||firstSign=='<'){
+   if(count>1){
+     transitiveRedirect(args,firstSign);
+     return 1;
+   }
+   simpleRedirect(args,firstSign);
+   return 1
+ }
+
   return 0;
 }
 void set_color(unsigned char color) {
