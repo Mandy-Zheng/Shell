@@ -36,17 +36,19 @@ char ** parseMulti(char * args){
   }
   return multicommand;
 }
-void executing(char ** command){
+void executing(char ** command, int * keepRunning){
   if(strcmp(command[0],"exit") == 0){
-    exit(0);
+    * keepRunning = 0;
   }
-  if (!isChangeDirectory(command)){
+  else if (!isChangeDirectory(command)){
     if(fork()==0){
-      execvp(command[0],command);
+      if(execvp(command[0],command) == -1){
+        printf("%s: command not found\n",command[0]);
+        exit(0);
+      }
     }else{
       wait(NULL);
     }
-    printf("\n");
   }
 }
 void simpleRedirect(char * args,char sign){
@@ -173,15 +175,43 @@ int changeDirectory(char ** command){
 
 int isPipe(char ** command){
   for (size_t i = 0; i < lengthArgs(command); i++) {
-    if(!strcmp(command[0],"|")){
-      //performPipe(command, 0);
+    if(!strcmp(command[i],"|")){
+      if(performPipe(command, i));
       return 1;
     }
   }
   return 0;
 }
-// void performPipe(char ** command, int index){
-// }
+int performPipe(char ** command, int index){
+    FILE * read;
+    FILE * write;
+    char transfer[1028][1028];
+
+    read= popen(command[index-1],"r");
+    // if( p == NULL)
+    // {
+    //     printf("%s\n", );("Unable to open process");
+    //     return 1;
+    // }
+    int stop = 0;
+    int length = 0;
+    for (size_t i = 0; !stop; i++) {
+      if (fgets(transfer[i],sizeof(transfer[i]),read) == NULL){
+        stop = 1;
+      } else {
+        printf("%s\n",transfer[i]);
+        length = i+1;
+      }
+    }
+    pclose(read);
+    write = popen(command[index+1],"w");
+    for (size_t i = 0; i < length; i++) {
+      fprintf(write, "%s", transfer[i]);
+    }
+    pclose(write);
+    return 1;
+  }
+
 //how many max?
 int isRedirect(char * args){
   int count=0;
