@@ -76,7 +76,7 @@ void transitiveRedirect(char * args, char firstsign){
   char ** commandfirst = redirect_parse(args,&firstsign);
   if(firstsign=='>'){
     if(fork()==0){
-      char ** commandsecond=redirect_parse(commandfirst[1], '<');
+      char ** commandsecond=redirect_parse(commandfirst[1], "<");
       int into = open(commandsecond[0],O_WRONLY | O_CREAT, 0644);
       int from = open(commandsecond[1],O_RDONLY,0644);
       dup2(into, STDOUT_FILENO);
@@ -88,7 +88,7 @@ void transitiveRedirect(char * args, char firstsign){
     }
   }else{
     if(fork()==0){
-      char ** commandsecond=redirect_parse(commandfirst[1], '>');
+      char ** commandsecond=redirect_parse(commandfirst[1], ">");
       int into = open(commandsecond[1],O_WRONLY | O_CREAT, 0644);
       int from = open(commandsecond[0],O_RDONLY,0644);
       dup2(into, STDOUT_FILENO);
