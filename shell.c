@@ -170,19 +170,31 @@ int isPipe(char ** command){
 int performPipe(char ** command, int index){
     FILE * read;
     FILE * write;
-    char transfer[4096];
+    char transfer[1028][1028];
 
-    read = popen(command[index-1],"r");
+    read= popen(command[index-1],"r");
     // if( p == NULL)
     // {
     //     printf("%s\n", );("Unable to open process");
     //     return 1;
     // }
-    fgets(transfer,sizeof(transfer),read);
+    int stop = 0;
+    int length = 0;
+    for (size_t i = 0; !stop; i++) {
+      if (fgets(transfer[i],sizeof(transfer[i]),read) == NULL){
+        stop = 1;
+      } else {
+        printf("%s\n",transfer[i]);
+        length = i+1;
+      }
+    }
     pclose(read);
     write = popen(command[index+1],"w");
-    fprintf(write, "%s", transfer);
+    for (size_t i = 0; i < length; i++) {
+      fprintf(write, "%s", transfer[i]);
+    }
     pclose(write);
+    return 1;
   }
 
 //how many max?
