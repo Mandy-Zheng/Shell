@@ -1,13 +1,16 @@
 #include "shell.h"
 static int keepRunning = 1;
+static int inTerminal = 1;
 static void sighandler(int signo){
-  char dir_path[512];
-  set_color(14);
-  getcwd(dir_path,sizeof(dir_path));
-  printf("\n%s",dir_path);
-  printf("\n$ ");
-  set_color(15);
-  fflush(stdout);
+  if (inTerminal){
+    char dir_path[512];
+    set_color(14);
+    getcwd(dir_path,sizeof(dir_path));
+    printf("\n%s",dir_path);
+    printf("\n$ ");
+    set_color(15);
+    fflush(stdout);
+  }
 }
 int main(int argc, char const *argv[]) {
   char * args=calloc(sizeof(char),1000);
@@ -29,7 +32,9 @@ int main(int argc, char const *argv[]) {
             if(strlen(commandmulti[i])>0){
               char ** command = parse(commandmulti[i]);
               if(!isPipe(command)){
+                 inTerminal = 0;
                  executing(command,&keepRunning);
+                 inTerminal = 1;
                }
              }
           }
