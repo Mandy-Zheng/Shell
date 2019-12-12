@@ -55,7 +55,7 @@ void simpleRedirect(char * args,char sign){
   char ** command = redirect_parse(args,&sign);
   if(sign=='>'){
     if(fork()==0){
-      int into = open(command[1],O_WRONLY | O_CREAT, 0644);
+      int into = open(strip(command[1],' '),O_WRONLY | O_CREAT, 0644);
       dup2(into, STDOUT_FILENO);
       char ** command2 = parse(command[0]);
       execvp(command2[0],command2);
@@ -66,7 +66,7 @@ void simpleRedirect(char * args,char sign){
     if(fork()==0){
       int into = open(command[1],O_RDONLY, 0644);
       dup2(into,STDIN_FILENO);
-      char ** command2 = parse(command[0]);
+      char ** command2 = parse(strip(command[0],' '));
       execvp(command2[0],command2);
     }else{
       wait(NULL);
@@ -79,8 +79,8 @@ void transitiveRedirect(char * args, char firstsign){
   if(firstsign=='>'){
     if(fork()==0){
       char ** commandsecond=redirect_parse(commandfirst[1], "<");
-      int into = open(commandsecond[0],O_WRONLY | O_CREAT, 0644);
-      int from = open(commandsecond[1],O_RDONLY,0644);
+      int into = open(strip(commandsecond[0],' '),O_WRONLY | O_CREAT, 0644);
+      int from = open(strip(commandsecond[1], ' '),O_RDONLY,0644);
       dup2(into, STDOUT_FILENO);
       dup2(from, STDIN_FILENO);
       char ** command2 = parse(commandfirst[0]);
@@ -91,8 +91,8 @@ void transitiveRedirect(char * args, char firstsign){
   }else{
     if(fork()==0){
       char ** commandsecond=redirect_parse(commandfirst[1], ">");
-      int into = open(commandsecond[1],O_WRONLY | O_CREAT, 0644);
-      int from = open(commandsecond[0],O_RDONLY,0644);
+      int into = open(strip(commandsecond[1],' '),O_WRONLY | O_CREAT, 0644);
+      int from = open(strip(commandsecond[0],' '),O_RDONLY,0644);
       dup2(into, STDOUT_FILENO);
       dup2(from, STDIN_FILENO);
       char ** command2 = parse(commandfirst[0]);
@@ -210,7 +210,7 @@ int isRedirect(char * args){
       return 1;
     }
     if(args[i]=='>' || args[i]=='<'){
-      if(firstSign=='\0'){
+      if(firstSign!='<'&&first!='>'){
         firstSign=args[i];
       }
       count++;
@@ -222,7 +222,7 @@ int isRedirect(char * args){
      return 1;
    }
    simpleRedirect(args,firstSign);
-   return 1
+   return 1;
  }
 
   return 0;
