@@ -42,11 +42,13 @@ void executing(char ** command, int * keepRunning){
   }
   else if (!isChangeDirectory(command)){
     if(fork()==0){
-      execvp(command[0],command);
+      if(execvp(command[0],command) == -1){
+        printf("%s: command not found\n",command[0]);
+        exit(0);
+      }
     }else{
       wait(NULL);
     }
-    printf("\n");
   }
 }
 void simpleRedirect(char * args,char sign){

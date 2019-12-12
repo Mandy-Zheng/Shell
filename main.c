@@ -6,8 +6,9 @@ static void sighandler(int signo){
     char dir_path[512];
     set_color(14);
     getcwd(dir_path,sizeof(dir_path));
-    printf("\n%s",dir_path);
-    printf("\n$ ");
+    printf("\n%s ",dir_path);
+    set_color(13);
+    printf("$ ");
     set_color(15);
     fflush(stdout);
   }
@@ -19,7 +20,9 @@ int main(int argc, char const *argv[]) {
   while(keepRunning){
     set_color(Cyan);
     getcwd(dir_path,sizeof(dir_path));
-    printf("%s\n$ ",dir_path);
+    printf("%s ",dir_path);
+    set_color(Pink);
+    printf("$ ");
     set_color(White);
     fgets(args, 1000, stdin);
     if(args[0] !='\n'){
