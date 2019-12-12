@@ -55,7 +55,7 @@ void simpleRedirect(char * args,char sign){
   char ** command = redirect_parse(args,&sign);
   if(sign=='>'){
     if(fork()==0){
-      int into = open(trunc(strip(command[1],' '),' '),O_WRONLY | O_CREAT, 0644);
+      int into = open(truncs(strip(command[1],' '),' '),O_WRONLY | O_CREAT, 0644);
       dup2(into, STDOUT_FILENO);
       char ** command2 = parse(command[0]);
       execvp(command2[0],command2);
@@ -79,8 +79,10 @@ void transitiveRedirect(char * args, char firstsign){
   if(firstsign=='>'){
     if(fork()==0){
       char ** commandsecond=parse(commandfirst[1], "<");
-      int into = open(trunc(strip(commandsecond[0],' '),' '),O_WRONLY | O_CREAT, 0644);
-      int from = open(trunc(strip(commandsecond[1], ' '), ' '),O_RDONLY,0644);
+      commandsecond[0]=truncs(strip(commandsecond[0],' '),' ')
+      commandsecond[1]=truncs(strip(commandsecond[1],' '),' ')
+      int into = open(commandsecond[0],O_WRONLY | O_CREAT, 0644);
+      int from = open(commandsecond[1],O_RDONLY,0644);
       dup2(into, STDOUT_FILENO);
       dup2(from, STDIN_FILENO);
       char ** command2 = parse(commandfirst[0]);
@@ -160,7 +162,7 @@ char * strip(char * args, char sign){
   return args;
 }
 
-char * trunc(char * args, char sign){
+char * truncs(char * args, char sign){
   int start=-1;
   int length=strlen(args);
   for(size_t i = 0; i < length;i++){
@@ -225,7 +227,7 @@ int isRedirect(char * args){
       count++;
     }
  }
- if(firstSign=='<' ||firstSign=='<'){
+ if(firstSign=='<' ||firstSign=='>'){
    if(count>1){
      transitiveRedirect(args,firstSign);
      return 1;
