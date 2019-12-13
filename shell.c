@@ -203,8 +203,8 @@ int changeDirectory(char ** command){
 
 int isPipe(char ** command){
   for (size_t i = 0; i < lengthArgs(command); i++) {
-    if(!strcmp(command[i],"|")){
-      if(performPipe(command, i));
+    if(!strcmp(command[i],"|"))
+      parsePipe(command);
       return 1;
     }
   }
