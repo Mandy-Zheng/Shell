@@ -26,12 +26,9 @@ char ** parseMulti(char * args){
   char * onecommand=args;
   for (size_t i = 0; onecommand != NULL; i++) {
     multicommand[i]=strsep(&onecommand,";");
-    if(multicommand[i][0]==' '){
-      int len=strlen(multicommand[i]);
-      for (size_t j=0;j<len-1;j++){
-      	multicommand[i][j]= multicommand[i][j+1];
-      }
-      multicommand[i][len-1]='\0';
+    multicommand[i]= truncs(strip(multicommand[i],' '),' ');
+    if(strlen(multicommand[i])==0){
+      i--;
     }
   }
   return multicommand;
@@ -77,10 +74,10 @@ void simpleRedirect(char * args,char sign){
 
 void transitiveRedirect(char * args, char firstsign){
   char ** commandfirst = redirect_parse(args,&firstsign);
-  if(firstsign=='>'){
-    if(fork()==0){
+  if(fork()==0){
+    if(firstsign=='>'){
       char ** commandsecond=redirect_parse(commandfirst[1], "<");
-      commandsecond[0]=truncs(strip(commandsecond[0],' '),' ')
+      commandsecond[0]=truncs(strip(commandsecond[0],' '),' ');
       commandsecond[1]=truncs(strip(commandsecond[1],' '),' ');
       int into = open(commandsecond[0],O_WRONLY | O_CREAT, 0644);
       int from = open(commandsecond[1],O_RDONLY,0644);
@@ -89,10 +86,6 @@ void transitiveRedirect(char * args, char firstsign){
       char ** command2 = parse(commandfirst[0]);
       execvp(command2[0],command2);
     }else{
-      wait(NULL);
-    }
-  }else{
-    if(fork()==0){
       char ** commandsecond=redirect_parse(commandfirst[1], ">");
       int into = open(strip(commandsecond[1],' '),O_WRONLY | O_CREAT, 0644);
       int from = open(strip(commandsecond[0],' '),O_RDONLY,0644);
@@ -100,11 +93,12 @@ void transitiveRedirect(char * args, char firstsign){
       dup2(from, STDIN_FILENO);
       char ** command2 = parse(commandfirst[0]);
       execvp(command2[0],command2);
-    }else{
-      wait(NULL);
     }
+  }else{
+    wait(NULL);
   }
 }
+
 
 void complexRedirect(char * args,char sign){
   char ** command = redirect_parse(args,">>");
@@ -134,13 +128,7 @@ char ** redirect_parse(char * args, char * sign){
   char * onecommand=args;
   for (size_t i = 0; onecommand != NULL; i++) {
     multicommand[i]=strsep(&onecommand,sign);
-    if(multicommand[i][0]==' '){
-      int len=strlen(multicommand[i]);
-      for (size_t j=0;j<len-1;j++){
-      	multicommand[i][j]= multicommand[i][j+1];
-      }
-      multicommand[i][len-1]='\0';
-    }
+    multicommand[i]= truncs(strip(multicommand[i],' '),' ');
     if(strlen(multicommand[i])==0){
       i--;
     }
@@ -150,13 +138,15 @@ char ** redirect_parse(char * args, char * sign){
 char * strip(char * args, char sign){
   int start=-1;
   for(size_t i = 0; i < strlen(args);i++){
-    if(args[i]==sign){
-      start=i;
+    if(start==-1 && args[i]!=sign){
+      start=0;
     }
-    if(i>start && start!=-1){
-      args[i-1]=args[i];
+    if(start!=-1){
+      args[start]=args[i];
+      start++;
       if(i==strlen(args)-1){
-        args[i]='\0';
+        args[start]='\0';
+        return args;
       }
     }
   }
@@ -164,13 +154,12 @@ char * strip(char * args, char sign){
 }
 
 char * truncs(char * args, char sign){
-  int start=-1;
-  int length=strlen(args);
-  for(size_t i = 0; i < length;i++){
+  int length=strlen(args)-1;
+  for(size_t i = length; i >= 0;i--){
     if(args[i]==sign){
       args[i]='\0';
     }else{
-      i=-2;
+      return args;
     }
   }
   return args;
