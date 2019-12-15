@@ -121,6 +121,9 @@ void hybridRedirect(char * args, char sign){
   char ** command2=parseMulti(command[1], ">");
   command2[0]=truncs(strip(command2[0],' '),' ');
   command2[1]=truncs(strip(command2[1],' '),' ');
+  printf("%s\n",command[0]);
+  printf("%s\n",command2[0]);
+  printf("%s\n",command2[1]);
   if(fork()==0){
     int into = open(command2[1],O_WRONLY | O_CREAT, 0644);
     dup2(into,STDOUT_FILENO);
@@ -239,16 +242,7 @@ int isPipe(char ** command){
   }
   return 0;
 }
-// char ** parsePipe(char ** args){
-//   char ** command=calloc(sizeof(char *),100);
-//   for (size_t i = 0, index = 0; args[i] != NULL; i++) {
-//     if (strcmp(args[i],"|") != 0){
-//       command[index] = args[i];
-//       index++;
-//     }
-//   }
-//   return command;
-// }
+
 int performPipeRecursive(char ** command, int numArgs){
   if (numArgs < 2){
     return 1;
@@ -274,7 +268,7 @@ int performPipe(char * command1, char * command2){
       if (fgets(transfer[i],sizeof(transfer[i]),read) == NULL){
         stop = 1;
       } else {
-        //printf("%s\n",transfer[i]);
+        printf("%s\n",transfer[i]);
         length = i+1;
       }
     }
