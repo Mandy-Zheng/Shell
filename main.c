@@ -27,7 +27,7 @@ int main(int argc, char const *argv[]) {
     fgets(args, 1000, stdin);
     if(args[0] !='\n'){
       args[strlen(args)-1]='\0';
-      char ** commandmulti=parseMulti(args, ';');
+      char ** commandmulti=parseMulti(args, ";");
         if(lengthArgs(commandmulti)>0){
             for (size_t i =0 ; i< lengthArgs(commandmulti) && keepRunning;i++){
               if(strlen(commandmulti[i])>0){
