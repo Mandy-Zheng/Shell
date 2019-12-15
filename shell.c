@@ -34,6 +34,7 @@ char ** parseMulti(char * args, char * sign){
   }
   return multicommand;
 }
+
 void executing(char ** command, int * keepRunning){
   if(strcmp(command[0],"exit") == 0){
     * keepRunning = 0;
@@ -111,7 +112,7 @@ void complexRedirect(char * args,char sign){
   }
 }
 
-void hybridRedirect(args, args[i]){
+void hybridRedirect(char * args, char sign){
   char ** command = parseMulti(args, "|");
   char ** command2=parseMulti(command[1], ">");
   command2[0]=truncs(strip(command2[0],' '),' ');
@@ -127,18 +128,6 @@ void hybridRedirect(args, args[i]){
   }
 }
 
-char ** parseMulti(char * args, char * sign){
-  char ** multicommand=calloc(sizeof(char*),100);
-  char * onecommand=args;
-  for (size_t i = 0; onecommand != NULL; i++) {
-    multicommand[i]=strsep(&onecommand,sign);
-    multicommand[i]= truncs(strip(multicommand[i],' '),' ');
-    if(strlen(multicommand[i])==0){
-      i--;
-    }
-  }
-  return multicommand;
-}
 char * strip(char * args, char sign){
   int start=-1;
   for(size_t i = 0; i < strlen(args);i++){
@@ -194,64 +183,10 @@ int changeDirectory(char ** command){
   return 0;
 }
 
-int isPipe(char ** command){
-  char ** parsedCommand;
-  for (size_t i = 0; i < lengthArgs(command); i++) {
-    if(!strcmp(command[i],"|"))
-      parsedCommand = parsePipe(command);
-      performPipe(parsedCommand);
-      return 1;
-    }
-  }
-  return 0;
-}
-char ** parsePipe(char ** args){
-  char ** command=calloc(sizeof(char *),100);
-  char * part=args;
-  for (size_t i = 0; part!=NULL; i++) {
-    command[i]= strsep(&part,"|");
-    if (strlen(command[i])==0){
-      command[i]=NULL;
-    }else{
-      strip(command[i],' ');
-    }
-  }
-  return command;
-}
-int performPipe(char ** command, int index){
-    FILE * read;
-    FILE * write;
-    char transfer[1028][1028];
-
-    read= popen(command[0],"r");
-    // if( p == NULL)
-    // {
-    //     printf("%s\n", );("Unable to open process");
-    //     return 1;
-    // }
-    int stop = 0;
-    int length = 0;
-    for (size_t i = 0; !stop; i++) {
-      if (fgets(transfer[i],sizeof(transfer[i]),read) == NULL){
-        stop = 1;
-      } else {
-        printf("%s\n",transfer[i]);
-        length = i+1;
-      }
-    }
-    pclose(read);
-    write = popen(command[1],"w");
-    for (size_t i = 0; i < length; i++) {
-      fprintf(write, "%s", transfer[i]);
-    }
-    pclose(write);
-    return 1;
-  }
-
 //how many max?
 int isRedirect(char * args){
   int count=0;
-  int pipe=isPipe(args);
+  int pipe=isPipe(parse(args));
   char firstSign='\0';
   for (size_t i = 1; i < strlen(args)-1; i++) {
     if(args[i]=='>' && pipe){

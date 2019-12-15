@@ -14,7 +14,7 @@ enum color {Black, DarkRed, DarkGreen, DarkYellow, DarkBlue, Purple, DarkCyan, L
 int lengthArgs(char **command);
 char ** parse(char * args);
 void executing(char ** command, int * keepRunning);
-char ** parseMulti(char * args,char sign);
+char ** parseMulti(char * args,char * sign);
 void simpleRedirect(char * args,char sign);
 int isRedirect(char * args);
 int isChangeDirectory(char ** command);
@@ -27,3 +27,4 @@ void set_color(unsigned char color);
 void complexRedirect(char * args,char sign);
 void transitiveRedirect(char * args, char sign);
 char * truncs(char * args, char sign);
+void hybridRedirect(char * args, char sign;
