@@ -12,7 +12,7 @@ char ** parse(char * args){
   char ** command=calloc(sizeof(char *),100);
   char * part=args;
   for (size_t i = 0; part!=NULL; i++) {
-    if(!strcmp())
+    command[i]= strsep(&part," ");
     if (strlen(command[i])==0){
       command[i]=NULL;
     }else{
