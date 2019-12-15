@@ -217,9 +217,9 @@ int isRedirect(char * args){
 int isPipe(char ** command){
   char ** parsedCommand;
   for (size_t i = 0; i < lengthArgs(command); i++) {
-    if(!strcmp(command[i],"|"))
+    if(!strcmp(command[i],"|")){
       parsedCommand = parsePipe(command);
-      performPipe(parsedCommand);
+      performPipe(parsedCommand,0);
       return 1;
     }
   }
@@ -227,13 +227,10 @@ int isPipe(char ** command){
 }
 char ** parsePipe(char ** args){
   char ** command=calloc(sizeof(char *),100);
-  char * part=args;
-  for (size_t i = 0; part!=NULL; i++) {
-    command[i]= strsep(&part,"|");
-    if (strlen(command[i])==0){
-      command[i]=NULL;
-    }else{
-      strip(command[i],' ');
+  for (size_t i = 0, index = 0; args[i] != NULL; i++) {
+    if (strcmp(args[i],"|") != 0){
+      command[index] = args[i];
+      index++;
     }
   }
   return command;
@@ -255,7 +252,7 @@ int performPipe(char ** command, int index){
       if (fgets(transfer[i],sizeof(transfer[i]),read) == NULL){
         stop = 1;
       } else {
-        printf("%s\n",transfer[i]);
+        //printf("%s\n",transfer[i]);
         length = i+1;
       }
     }
