@@ -16,6 +16,7 @@ char ** parse(char * args){
     command[i]= strsep(&part," ");
     if (strlen(command[i])==0){
       command[i]=NULL;
+      i--;
     }else{
       command[i]=truncs(strip(command[i],' '), ' ');
     }
@@ -31,6 +32,7 @@ char ** parseMulti(char * args, char * sign){
     multicommand[i]=strsep(&onecommand,sign);
     multicommand[i]= truncs(strip(multicommand[i],' '),' ');
     if(strlen(multicommand[i])==0){
+      multicommand[i] = NULL;
       i--;
     }
   }
@@ -184,7 +186,12 @@ int changeDirectory(char ** command){
 //how many max?
 int isRedirect(char * args){
   int count=0;
-  int pipe=isPipe(parse(args));
+  int pipe = 0;
+  for (size_t i = 0; i < strlen(args); i++) {
+    if(args[i] == '|'){
+      pipe = 1;
+    }
+  }
   char firstSign='\0';
   for (size_t i = 1; i < strlen(args)-1; i++) {
     if(args[i]=='>' && pipe){
@@ -222,9 +229,9 @@ int isPipe(char ** command){
   }
   for (size_t i = 0; i < strlen(parsePreparation); i++) {
     if(parsePreparation[i] == '|'){
-      printf("%s\n",parsePreparation);
+      //printf("%s\n",parsePreparation);
       parsedCommand = parseMulti(parsePreparation, "|");
-      printf("%s    f\n", parsedCommand[1]);
+      //printf("%s    f\n", parsedCommand[1]);
       free(parsePreparation);
       performPipeRecursive(parsedCommand,lengthArgs(parsedCommand));
       return 1;
@@ -244,7 +251,7 @@ int isPipe(char ** command){
 // }
 int performPipeRecursive(char ** command, int numArgs){
   if (numArgs < 2){
-    return 0;
+    return 1;
   } else{
     performPipe(command[lengthArgs(command)-numArgs],command[lengthArgs(command)-numArgs+1]);
     return performPipeRecursive(command,numArgs-1);
