@@ -119,14 +119,10 @@ void hybridRedirect(char * args, char sign){
   char ** command2=parseMulti(command[1], ">");
   command2[0]=truncs(strip(command2[0],' '),' ');
   command2[1]=truncs(strip(command2[1],' '),' ');
-  char * pipeCommand[3];
-  pipeCommand[0] = command[0];
-  pipeCommand[1] = "|";
-  pipeCommand[2] = command2[0];
   if(fork()==0){
     int into = open(command2[1],O_WRONLY | O_CREAT, 0644);
     dup2(into,STDOUT_FILENO);
-    performPipe(pipeCommand,0);
+    performPipe(command[0],command2[0]);
   }
 }
 
@@ -220,7 +216,7 @@ int isPipe(char ** command){
   char * parsePreparation = calloc(sizeof(char *),100);
   char ** parsedCommand;
   int run = 0;
-  printf("%d\n",lengthArgs(command));
+  //printf("%d\n",lengthArgs(command));
   for (size_t i = 0; i < lengthArgs(command); i++) {
     strcat(parsePreparation,command[i]);
     if(!strcmp(command[i],"|")){
@@ -228,11 +224,12 @@ int isPipe(char ** command){
     }
   }
   if (run){
-    printf("YOO\n");
+    //printf("YOO\n");
     printf("%s\n",parsePreparation);
     parsedCommand = parseMulti(parsePreparation, "|");
+    printf("%s    f\n", parsedCommand[1]);
     free(parsePreparation);
-    performPipeRecursive(parsedCommand,0);
+    performPipeRecursive(parsedCommand,lengthArgs(parsedCommand));
     return 1;
   }
   return 0;
@@ -247,15 +244,15 @@ int isPipe(char ** command){
 //   }
 //   return command;
 // }
-int performPipeRecursive(char ** command, int lengthArgs){
-  if (lengthArgs < 2){
+int performPipeRecursive(char ** command, int numArgs){
+  if (numArgs < 2){
     return 0;
   } else{
-    performPipe(command[lengthArgs(command)-lengthArgs],command[lengthArgs(command)-lengthArgs]+1);
-    performPipeRecursive(command,lengthArgs-1);
+    performPipe(command[lengthArgs(command)-numArgs],command[lengthArgs(command)-numArgs+1]);
+    return performPipeRecursive(command,numArgs-1);
   }
 }
-int performPipe(char * command1, char * command2, int index){
+int performPipe(char * command1, char * command2){
     FILE * read;
     FILE * write;
     char transfer[1028][1028];

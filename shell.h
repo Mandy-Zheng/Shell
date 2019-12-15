@@ -21,7 +21,7 @@ int isChangeDirectory(char ** command);
 int changeDirectory(char ** command);
 int isPipe(char ** command);
 char ** parsePipe(char ** args);
-int performPipe(char ** command, int index);
+int performPipe(char * command1, char * command2);
 char * strip(char * args, char sign);
 void set_color(unsigned char color);
 void complexRedirect(char * args,char sign);
