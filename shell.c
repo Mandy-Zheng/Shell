@@ -10,7 +10,8 @@ int lengthArgs(char **command){
 }
 char ** parse(char * args){
   char ** command=calloc(sizeof(char *),100);
-  char * part=args;
+  char * part=calloc(sizeof(char),1000);
+  strcpy(part,args);
   for (size_t i = 0; part!=NULL; i++) {
     command[i]= strsep(&part," ");
     if (strlen(command[i])==0){
@@ -24,7 +25,8 @@ char ** parse(char * args){
 
 char ** parseMulti(char * args, char * sign){
   char ** multicommand=calloc(sizeof(char*),100);
-  char * onecommand=args;
+  char * onecommand=calloc(sizeof(char),1000);
+  strcpy(onecommand,args);
   for (size_t i = 0; onecommand != NULL; i++) {
     multicommand[i]=strsep(&onecommand,sign);
     multicommand[i]= truncs(strip(multicommand[i],' '),' ');
