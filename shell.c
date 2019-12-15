@@ -222,20 +222,14 @@ int isRedirect(char * args){
 
   return 0;
 }
-int isPipe(char ** command){
-  char * parsePreparation = calloc(sizeof(char *),100);
+int isPipe(char * command){
   char ** parsedCommand;
   int run = 0;
-  //printf("%d\n",lengthArgs(command));
-  for (size_t i = 0; i < lengthArgs(command); i++) {
-    strcat(parsePreparation,command[i]);
-  }
-  for (size_t i = 0; i < strlen(parsePreparation); i++) {
-    if(parsePreparation[i] == '|'){
-      //printf("%s\n",parsePreparation);
-      parsedCommand = parseMulti(parsePreparation, "|");
+  for (size_t i = 0; i < strlen(command); i++) {
+    if(command[i] == '|'){
+      printf("%s\n",command);
+      parsedCommand = parseMulti(command, "|");
       //printf("%s    f\n", parsedCommand[1]);
-      free(parsePreparation);
       performPipeRecursive(parsedCommand,lengthArgs(parsedCommand));
       return 1;
     }
@@ -268,7 +262,7 @@ int performPipe(char * command1, char * command2){
       if (fgets(transfer[i],sizeof(transfer[i]),read) == NULL){
         stop = 1;
       } else {
-        printf("%s\n",transfer[i]);
+        //printf("%s\n",transfer[i]);
         length = i+1;
       }
     }
