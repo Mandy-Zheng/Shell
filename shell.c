@@ -12,7 +12,7 @@ char ** parse(char * args){
   char ** command=calloc(sizeof(char *),100);
   char * part=args;
   for (size_t i = 0; part!=NULL; i++) {
-    command[i]= strsep(&part," ");
+    if(!strcmp())
     if (strlen(command[i])==0){
       command[i]=NULL;
     }else{
@@ -80,7 +80,7 @@ void transitiveRedirect(char * args, char firstsign){
   if(firstsign=='>'){
     if(fork()==0){
       char ** commandsecond=redirect_parse(commandfirst[1], "<");
-      commandsecond[0]=truncs(strip(commandsecond[0],' '),' ')
+      commandsecond[0]=truncs(strip(commandsecond[0],' '),' ');
       commandsecond[1]=truncs(strip(commandsecond[1],' '),' ');
       int into = open(commandsecond[0],O_WRONLY | O_CREAT, 0644);
       int from = open(commandsecond[1],O_RDONLY,0644);
@@ -202,20 +202,35 @@ int changeDirectory(char ** command){
 }
 
 int isPipe(char ** command){
+  char ** parsedCommand;
   for (size_t i = 0; i < lengthArgs(command); i++) {
     if(!strcmp(command[i],"|"))
-      parsePipe(command);
+      parsedCommand = parsePipe(command);
+      performPipe(parsedCommand);
       return 1;
     }
   }
   return 0;
+}
+char ** parsePipe(char ** args){
+  char ** command=calloc(sizeof(char *),100);
+  char * part=args;
+  for (size_t i = 0; part!=NULL; i++) {
+    command[i]= strsep(&part,"|");
+    if (strlen(command[i])==0){
+      command[i]=NULL;
+    }else{
+      strip(command[i],' ');
+    }
+  }
+  return command;
 }
 int performPipe(char ** command, int index){
     FILE * read;
     FILE * write;
     char transfer[1028][1028];
 
-    read= popen(command[index-1],"r");
+    read= popen(command[0],"r");
     // if( p == NULL)
     // {
     //     printf("%s\n", );("Unable to open process");
@@ -232,7 +247,7 @@ int performPipe(char ** command, int index){
       }
     }
     pclose(read);
-    write = popen(command[index+1],"w");
+    write = popen(command[1],"w");
     for (size_t i = 0; i < length; i++) {
       fprintf(write, "%s", transfer[i]);
     }
