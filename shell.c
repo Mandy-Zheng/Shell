@@ -215,32 +215,50 @@ int isRedirect(char * args){
   return 0;
 }
 int isPipe(char ** command){
+  char * parsePreparation = calloc(sizeof(char *),100);
   char ** parsedCommand;
+  int run = 0;
+  printf("%d\n",lengthArgs(command));
   for (size_t i = 0; i < lengthArgs(command); i++) {
+    strcat(parsePreparation,command[i]);
     if(!strcmp(command[i],"|")){
-      parsedCommand = parsePipe(command);
-      performPipe(parsedCommand,0);
-      return 1;
+        run = 1;
     }
+  }
+  if (run){
+    printf("YOO\n");
+    printf("%s\n",parsePreparation);
+    parsedCommand = parseMulti(parsePreparation, "|");
+    free(parsePreparation);
+    performPipeRecursive(parsedCommand,0);
+    return 1;
   }
   return 0;
 }
-char ** parsePipe(char ** args){
-  char ** command=calloc(sizeof(char *),100);
-  for (size_t i = 0, index = 0; args[i] != NULL; i++) {
-    if (strcmp(args[i],"|") != 0){
-      command[index] = args[i];
-      index++;
-    }
+// char ** parsePipe(char ** args){
+//   char ** command=calloc(sizeof(char *),100);
+//   for (size_t i = 0, index = 0; args[i] != NULL; i++) {
+//     if (strcmp(args[i],"|") != 0){
+//       command[index] = args[i];
+//       index++;
+//     }
+//   }
+//   return command;
+// }
+int performPipeRecursive(char ** command, int lengthArgs){
+  if (lengthArgs < 2){
+    return 0;
+  } else{
+    performPipe(command[lengthArgs(command)-lengthArgs],command[lengthArgs(command)-lengthArgs]+1);
+    performPipeRecursive(command,lengthArgs-1);
   }
-  return command;
 }
-int performPipe(char ** command, int index){
+int performPipe(char * command1, char * command2, int index){
     FILE * read;
     FILE * write;
     char transfer[1028][1028];
 
-    read= popen(command[0],"r");
+    read= popen(command1,"r");
     // if( p == NULL)
     // {
     //     printf("%s\n", );("Unable to open process");
@@ -257,7 +275,7 @@ int performPipe(char ** command, int index){
       }
     }
     pclose(read);
-    write = popen(command[1],"w");
+    write = popen(command2,"w");
     for (size_t i = 0; i < length; i++) {
       fprintf(write, "%s", transfer[i]);
     }
