@@ -219,18 +219,16 @@ int isPipe(char ** command){
   //printf("%d\n",lengthArgs(command));
   for (size_t i = 0; i < lengthArgs(command); i++) {
     strcat(parsePreparation,command[i]);
-    if(!strcmp(command[i],"|")){
-        run = 1;
-    }
   }
-  if (run){
-    //printf("YOO\n");
-    printf("%s\n",parsePreparation);
-    parsedCommand = parseMulti(parsePreparation, "|");
-    printf("%s    f\n", parsedCommand[1]);
-    free(parsePreparation);
-    performPipeRecursive(parsedCommand,lengthArgs(parsedCommand));
-    return 1;
+  for (size_t i = 0; i < strlen(parsePreparation); i++) {
+    if(parsePreparation[i] == '|'){
+      printf("%s\n",parsePreparation);
+      parsedCommand = parseMulti(parsePreparation, "|");
+      printf("%s    f\n", parsedCommand[1]);
+      free(parsePreparation);
+      performPipeRecursive(parsedCommand,lengthArgs(parsedCommand));
+      return 1;
+    }
   }
   return 0;
 }
