@@ -216,6 +216,56 @@ int isRedirect(char * args){
 
   return 0;
 }
+int isPipe(char ** command){
+  char ** parsedCommand;
+  for (size_t i = 0; i < lengthArgs(command); i++) {
+    if(!strcmp(command[i],"|")){
+      parsedCommand = parsePipe(command);
+      performPipe(parsedCommand,0);
+      return 1;
+    }
+  }
+  return 0;
+}
+char ** parsePipe(char ** args){
+  char ** command=calloc(sizeof(char *),100);
+  for (size_t i = 0, index = 0; args[i] != NULL; i++) {
+    if (strcmp(args[i],"|") != 0){
+      command[index] = args[i];
+      index++;
+    }
+  }
+  return command;
+}
+int performPipe(char ** command, int index){
+    FILE * read;
+    FILE * write;
+    char transfer[1028][1028];
+
+    read= popen(command[0],"r");
+    // if( p == NULL)
+    // {
+    //     printf("%s\n", );("Unable to open process");
+    //     return 1;
+    // }
+    int stop = 0;
+    int length = 0;
+    for (size_t i = 0; !stop; i++) {
+      if (fgets(transfer[i],sizeof(transfer[i]),read) == NULL){
+        stop = 1;
+      } else {
+        //printf("%s\n",transfer[i]);
+        length = i+1;
+      }
+    }
+    pclose(read);
+    write = popen(command[1],"w");
+    for (size_t i = 0; i < length; i++) {
+      fprintf(write, "%s", transfer[i]);
+    }
+    pclose(write);
+    return 1;
+  }
 void set_color(unsigned char color) {
   printf("\033[0;38;5;%hhum", color);
 }
