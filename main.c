@@ -14,6 +14,8 @@ static void sighandler(int signo){
   }
 }
 int main(int argc, char const *argv[]) {
+  int storeRedirect[3];
+  saveRedirect(storeRedirect);
   char * args=calloc(sizeof(char),1000);
   char dir_path[512];
   signal(SIGINT,sighandler);
@@ -40,6 +42,7 @@ int main(int argc, char const *argv[]) {
                 }
               }
               inTerminal = 1;
+              restoreRedirect(storeRedirect);
             }
         }
     }

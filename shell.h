@@ -27,3 +27,5 @@ void complexRedirect(char * args,char sign);
 void transitiveRedirect(char * args, char firstsign);
 char * truncs(char * args, char sign);
 void hybridRedirect(char * args, char sign);
+void restoreRedirect(int* redirects);
+void saveRedirect(int* redirects);
