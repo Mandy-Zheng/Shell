@@ -3,6 +3,8 @@
 
 ### Features
 
+#### IMPORTANT User info from CWD does not print if you are running commands through a text file! (Colors will not show too)
+
 #### Basic Features:
 
 ######  -Reads and parses multiple commands separated by ;
