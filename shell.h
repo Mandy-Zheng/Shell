@@ -26,3 +26,5 @@ void simpleRedirect(char * args,char sign);
 int isRedirect(char * args);
 void complexRedirect(char * args,char sign);
 void transitiveRedirect(char * args, char firstsign);
+void restoreRedirect(int* redirects);
+void saveRedirect(int* redirects);

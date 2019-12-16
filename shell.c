@@ -36,3 +36,17 @@ void changeDirectory(char ** command){
 void set_color(unsigned char color) {
   printf("\033[0;38;5;%hhum", color);
 }
+void saveRedirect(int* redirects) {
+  redirects[0] = dup(STDIN_FILENO);
+  redirects[1] = dup(STDOUT_FILENO);
+  redirects[2] = dup(STDERR_FILENO);
+}
+
+void restoreRedirect(int* redirects) {
+  dup2(redirects[0], STDIN_FILENO);
+  dup2(redirects[1], STDOUT_FILENO);
+  dup2(redirects[2], STDERR_FILENO);
+  close(redirects[0]);
+  close(redirects[1]);
+  close(redirects[2]);
+}
