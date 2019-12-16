@@ -202,19 +202,13 @@ int isChangeDirectory(char ** command){
     return 0;
 }
 
-int changeDirectory(char ** command){
+void changeDirectory(char ** command){
   if (lengthArgs(command) > 2){
     printf("cd: too many arguments");
-    return 1;
   }
   else if (chdir(command[1]) != 0){
     printf("cd: %s: No such file or directory\n",command[1]);
-    return 1;
   }
-  else{
-    return 1;
-  }
-  return 0;
 }
 
 //how many max?
@@ -256,53 +250,46 @@ int isRedirect(char * args){
 int isPipe(char * command){
   char ** parsedCommand;
   int run = 0;
-  for (size_t i = 0; i < strlen(command); i++) {
+  for (size_t i = 0; i < strlen(command) ; i++) {
     if(command[i] == '|'){
-      printf("%s\n",command);
       parsedCommand = parseMulti(command, "|");
-      performPipeRecursive(parsedCommand,lengthArgs(parsedCommand));
+      char pipeFirst[1000];
+      strcpy(pipeFirst,parsedCommand[0]);
+      for (size_t j = 1; j < lengthArgs(parsedCommand)-1; j++) {
+        strcat(pipeFirst," | ");
+        strcat(pipeFirst,parsedCommand[j]);
+      }
+      performPipe(pipeFirst,parsedCommand[lengthArgs(parsedCommand)-1]);
       return 1;
     }
   }
   return 0;
 }
 
-int performPipeRecursive(char ** command, int numArgs){
-  if (numArgs < 2){
-    return 1;
-  } else{
-    performPipe(command[lengthArgs(command)-numArgs],command[lengthArgs(command)-numArgs+1]);
-    return performPipeRecursive(command,numArgs-1);
-  }
-}
-int performPipe(char * command1, char * command2){
+void performPipe(char * command1, char * command2){
     FILE * read;
     FILE * write;
     char transfer[1028][1028];
-
-    read= popen(command1,"r");
-    // if( p == NULL)
-    // {
-    //     printf("%s\n", );("Unable to open process");
-    //     return 1;
-    // }
     int stop = 0;
     int length = 0;
+    read= popen(command1,"r");
+    write = popen(command2,"w");
+
     for (size_t i = 0; !stop; i++) {
       if (fgets(transfer[i],sizeof(transfer[i]),read) == NULL){
         stop = 1;
       } else {
-        //printf("%s\n",transfer[i]);
         length = i+1;
       }
     }
     pclose(read);
-    write = popen(command2,"w");
+
+
     for (size_t i = 0; i < length; i++) {
       fprintf(write, "%s", transfer[i]);
     }
     pclose(write);
-    return 1;
+
   }
 void set_color(unsigned char color) {
   printf("\033[0;38;5;%hhum", color);
