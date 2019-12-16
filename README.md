@@ -15,7 +15,7 @@
 #### Additional Features we successfully implemented:
 
 ######  -Added Color (USE BLACK BACKGROUND TO SEE THE COLORS) to shell
-######  -Can put additional spaces before, after and even in the middle of flagged commands (e.g. "ls   -a")
+######  -Can put additional spaces before, after and even in the middle of flagged commands (e.g. "  ls    -a   ")
 ######  -Error handling/Simulating Bash Behavior (Handling Ctrl+c, Enter Key)
 ######  - >> redirection works
 ######  -Two simple redirection together works :  xxx > yyy < zzz and xxx< yyy >zzz
