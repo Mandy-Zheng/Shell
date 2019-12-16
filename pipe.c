@@ -25,6 +25,7 @@ int isPipe(char * command){
       return 1;
     }
   }
+  free(parsedCommand);
   return 0;
 }
 
