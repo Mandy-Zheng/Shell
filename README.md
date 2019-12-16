@@ -22,12 +22,12 @@
 ######  -infinite piping works
 
 #### Additional Features we tried to implement:
-- Up/Down Arrow
-- Moving Cursor sideways
-- "cd;"
-- ~
-- alias
-- Doing piping and redirect (e.g. ls | wc > inputfile)
+###### - Up/Down Arrow
+###### - Moving Cursor sideways
+###### - "cd;"
+###### - ~
+###### - alias
+###### - Doing piping and redirect (e.g. ls | wc > inputfile)
 #### Persisting Bugs in our program:
 
 #### Files and headers for all functions:
