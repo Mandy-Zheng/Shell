@@ -60,8 +60,8 @@ void simpleRedirect(char * args,char sign){
     if(sign=='>'){
       command[1]=truncs(strip(command[1],' '),' ');
       int into = open(command[1],O_WRONLY |O_TRUNC| O_CREAT, 0644);
-      if (into!=0 ){
-        printf("%s\n",strerror(into));
+      if (into<0 ){
+        printf("eee%s\n",strerror(into));
       }else{
         dup2(into, STDOUT_FILENO);
         char ** command2 = parse(command[0]);
@@ -69,8 +69,8 @@ void simpleRedirect(char * args,char sign){
       }
     }else{
       int into = open(command[1],O_RDONLY | O_CREAT, 0644);
-      if (into!=0) {
-        printf("%s\n",strerror(into));
+      if (into<0) {
+        printf("fff%s\n",strerror(into));
       }else{
         dup2(into,STDIN_FILENO);
         char ** command2 = parse(strip(command[0],' '));
@@ -91,10 +91,10 @@ void transitiveRedirect(char * args, char firstsign){
       commandsecond[1]=truncs(strip(commandsecond[1],' '),' ');
       int into = open(commandsecond[0],O_WRONLY | O_TRUNC | O_CREAT, 0644);
       int from = open(commandsecond[1],O_RDONLY,0644);
-      if (into!=0){
-        printf("%s\n",strerror(into));
-      }else if(from !=0){
-        printf("%s\n",strerror(from));
+      if (into<0){
+        printf("ggg%s\n",strerror(into));
+      }else if(from <0){
+        printf("hhh%s\n",strerror(from));
       }
       else{
         dup2(into, STDOUT_FILENO);
@@ -106,10 +106,10 @@ void transitiveRedirect(char * args, char firstsign){
       char ** commandsecond=parseMulti(commandfirst[1], ">");
       int into = open(strip(commandsecond[1],' '),O_WRONLY | O_TRUNC | O_CREAT, 0644);
       int from = open(strip(commandsecond[0],' '),O_RDONLY,0644);
-      if (into!=0){
-        printf("%s\n",strerror(from));
-      }else if(from !=0){
-        printf("%s\n",strerror(from));
+      if (into<0){
+        printf("aaa%s\n",strerror(from));
+      }else if(from <0){
+        printf("bbb%s\n",strerror(from));
       }else{
         dup2(into, STDOUT_FILENO);
         dup2(from, STDIN_FILENO);
@@ -128,8 +128,8 @@ void complexRedirect(char * args,char sign){
   if(sign=='>'){
     if(fork()==0){
       int into = open(command[1],O_WRONLY | O_APPEND | O_CREAT, 0644);
-      if (into!=0){
-        printf("%s\n",strerror(into));
+      if (into<0){
+        printf("ccc%s\n",strerror(into));
       }else{
         dup2(into, STDOUT_FILENO);
         char ** command2 = parse(command[0]);
@@ -151,8 +151,8 @@ void hybridRedirect(char * args, char sign){
   printf("%s\n",command2[1]);
   if(fork()==0){
     int into = open(command2[1],O_WRONLY | O_TRUNC | O_CREAT, 0644);
-    if (into!=0){
-      printf("%s\n",strerror(into));
+    if (into<0){
+      printf("ddd%s\n",strerror(into));
     }else{
     dup2(into,STDOUT_FILENO);
     performPipe(command[0],command2[0]);
