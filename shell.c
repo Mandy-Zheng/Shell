@@ -60,14 +60,22 @@ void simpleRedirect(char * args,char sign){
     if(sign=='>'){
       command[1]=truncs(strip(command[1],' '),' ');
       int into = open(command[1],O_WRONLY |O_TRUNC| O_CREAT, 0644);
-      dup2(into, STDOUT_FILENO);
-      char ** command2 = parse(command[0]);
-      execvp(command2[0],command2);
+      if (into!=0 ){
+        sighandler(into);
+      }else{
+        dup2(into, STDOUT_FILENO);
+        char ** command2 = parse(command[0]);
+        execvp(command2[0],command2);
+      }
     }else{
       int into = open(command[1],O_RDONLY | O_CREAT, 0644);
-      dup2(into,STDIN_FILENO);
-      char ** command2 = parse(strip(command[0],' '));
-      execvp(command2[0],command2);
+      if (into!=0) {
+        sighandler(into);
+      }else{
+        dup2(into,STDIN_FILENO);
+        char ** command2 = parse(strip(command[0],' '));
+        execvp(command2[0],command2);
+      }
     }
   }else{
     wait(NULL);
@@ -81,20 +89,33 @@ void transitiveRedirect(char * args, char firstsign){
       char ** commandsecond=parseMulti(commandfirst[1], "<");
       commandsecond[0]=truncs(strip(commandsecond[0],' '),' ');
       commandsecond[1]=truncs(strip(commandsecond[1],' '),' ');
-      int into = open(commandsecond[0],O_WRONLY | O_TRUNC |O_CREAT, 0644);
+      int into = open(commandsecond[0],O_WRONLY | O_TRUNC | O_CREAT, 0644);
       int from = open(commandsecond[1],O_RDONLY,0644);
-      dup2(into, STDOUT_FILENO);
-      dup2(from, STDIN_FILENO);
-      char ** command2 = parse(commandfirst[0]);
-      execvp(command2[0],command2);
+      if (into!=0){
+        sighandler(into);
+      }else if(from !=0){
+        sighandler(from);
+      }
+      else{
+        dup2(into, STDOUT_FILENO);
+        dup2(from, STDIN_FILENO);
+        char ** command2 = parse(commandfirst[0]);
+        execvp(command2[0],command2);
+      }
     }else{
       char ** commandsecond=parseMulti(commandfirst[1], ">");
-      int into = open(strip(commandsecond[1],' '),O_WRONLY | O_CREAT, 0644);
+      int into = open(strip(commandsecond[1],' '),O_WRONLY | O_TRUNC | O_CREAT, 0644);
       int from = open(strip(commandsecond[0],' '),O_RDONLY,0644);
-      dup2(into, STDOUT_FILENO);
-      dup2(from, STDIN_FILENO);
-      char ** command2 = parse(commandfirst[0]);
-      execvp(command2[0],command2);
+      if (into!=0){
+        sighandler(3);
+      }else if(from !=0){
+        sighandler(from);
+      }else{
+        dup2(into, STDOUT_FILENO);
+        dup2(from, STDIN_FILENO);
+        char ** command2 = parse(commandfirst[0]);
+        execvp(command2[0],command2);
+      }
     }
   }else{
     wait(NULL);
@@ -107,9 +128,13 @@ void complexRedirect(char * args,char sign){
   if(sign=='>'){
     if(fork()==0){
       int into = open(command[1],O_WRONLY | O_APPEND | O_CREAT, 0644);
-      dup2(into, STDOUT_FILENO);
-      char ** command2 = parse(command[0]);
-      execvp(command2[0],command2);
+      if (into!=0){
+        sighandler(into);
+      }else{
+        dup2(into, STDOUT_FILENO);
+        char ** command2 = parse(command[0]);
+        execvp(command2[0],command2);
+      }
     }else{
       wait(NULL);
     }
@@ -126,8 +151,14 @@ void hybridRedirect(char * args, char sign){
   printf("%s\n",command2[1]);
   if(fork()==0){
     int into = open(command2[1],O_WRONLY | O_TRUNC | O_CREAT, 0644);
+    if (into!=0){
+      sighandler(into);
+    }else{
     dup2(into,STDOUT_FILENO);
     performPipe(command[0],command2[0]);
+  }
+  }else{
+    wait(NULL);
   }
 }
 
@@ -229,7 +260,6 @@ int isPipe(char * command){
     if(command[i] == '|'){
       printf("%s\n",command);
       parsedCommand = parseMulti(command, "|");
-      //printf("%s    f\n", parsedCommand[1]);
       performPipeRecursive(parsedCommand,lengthArgs(parsedCommand));
       return 1;
     }
