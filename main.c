@@ -33,9 +33,8 @@ int main(int argc, char const *argv[]) {
               if(strlen(commandmulti[i])>0){
                 char ** command = parse(commandmulti[i]);
                 inTerminal = 0;
-                //printf("%s\n",command[1]);
                 if(!isRedirect(args)){
-                  if(!isPipe(command)){
+                  if(!isPipe(commandmulti[i])){
                     executing(command,&keepRunning);
                     inTerminal = 1;
                }

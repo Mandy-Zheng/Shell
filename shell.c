@@ -121,6 +121,9 @@ void hybridRedirect(char * args, char sign){
   char ** command2=parseMulti(command[1], ">");
   command2[0]=truncs(strip(command2[0],' '),' ');
   command2[1]=truncs(strip(command2[1],' '),' ');
+  printf("%s\n",command[0]);
+  printf("%s\n",command2[0]);
+  printf("%s\n",command2[1]);
   if(fork()==0){
     int into = open(command2[1],O_WRONLY | O_TRUNC | O_CREAT, 0644);
     dup2(into,STDOUT_FILENO);
@@ -219,36 +222,21 @@ int isRedirect(char * args){
 
   return 0;
 }
-int isPipe(char ** command){
-  char * parsePreparation = calloc(sizeof(char *),100);
+int isPipe(char * command){
   char ** parsedCommand;
   int run = 0;
-  //printf("%d\n",lengthArgs(command));
-  for (size_t i = 0; i < lengthArgs(command); i++) {
-    strcat(parsePreparation,command[i]);
-  }
-  for (size_t i = 0; i < strlen(parsePreparation); i++) {
-    if(parsePreparation[i] == '|'){
-      //printf("%s\n",parsePreparation);
-      parsedCommand = parseMulti(parsePreparation, "|");
+  for (size_t i = 0; i < strlen(command); i++) {
+    if(command[i] == '|'){
+      printf("%s\n",command);
+      parsedCommand = parseMulti(command, "|");
       //printf("%s    f\n", parsedCommand[1]);
-      free(parsePreparation);
       performPipeRecursive(parsedCommand,lengthArgs(parsedCommand));
       return 1;
     }
   }
   return 0;
 }
-// char ** parsePipe(char ** args){
-//   char ** command=calloc(sizeof(char *),100);
-//   for (size_t i = 0, index = 0; args[i] != NULL; i++) {
-//     if (strcmp(args[i],"|") != 0){
-//       command[index] = args[i];
-//       index++;
-//     }
-//   }
-//   return command;
-// }
+
 int performPipeRecursive(char ** command, int numArgs){
   if (numArgs < 2){
     return 1;
