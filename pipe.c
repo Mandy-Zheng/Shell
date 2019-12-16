@@ -1,5 +1,13 @@
 #include "shell.h"
 
+/*======== int isPipe(char * command) ==========
+Inputs:  char * command
+Returns: 1 if the command is an only | command, 0 otherwise
+Loops through the command in search of a |
+If an | exists, parse the string by | using parseMulti
+If the command has multiple |s, put all commands, except the last one, into one command
+Pass the commands into performPipe
+====================*/
 int isPipe(char * command){
   char ** parsedCommand;
   int run = 0;
@@ -19,6 +27,13 @@ int isPipe(char * command){
   return 0;
 }
 
+/*======== void performPipe(char * command1, char * command2); ==========
+Inputs:  char * command1, char * command2
+Returns: N/A
+Uses popen() to open the first command in reading mode
+Use popen to open the second command in writing mode
+Use fgets to read the first command's file output and write it in as the second command's input
+====================*/
 void performPipe(char * command1, char * command2){
     FILE * read;
     FILE * write;

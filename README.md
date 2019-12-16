@@ -18,7 +18,7 @@
 ######  -Can put additional spaces before, after and even in the middle of flagged commands (e.g. "  ls    -a   ")
 ######  -Error handling/Simulating Bash Behavior (Handling Ctrl+c, Enter Key)
 ######  - >> redirection works
-######  -Two simple redirection together works :  xxx > yyy < zzz and xxx< yyy >zzz
+######  -Using < > combo together works 
 ######  -infinite piping works
 
 #### Additional Features we tried to implement:
@@ -28,6 +28,7 @@
 ###### - ~
 ###### - alias
 ###### - Doing piping and redirect (e.g. ls | wc > inputfile)
+###### - Doing >> and > or >> and <
 #### Persisting Bugs in our program:
 
 #### Files and headers for all functions:
@@ -72,6 +73,12 @@
 	Inputs:  char * args, char * sign
 	Returns: returns a list of strings that are split from args based on sign
 	Keep on strseping untill the token is null and also strip each element of trailing white spaces. If the length of the element is 0, set the slot to Null, and don't advance the loop.
+	====================*/
+	
+	/*======== char ** parse(char * args) ==========
+	Inputs:  char * args
+	Returns: returns a list of strings that are split by spaces
+	Seperates the command from the flags
 	====================*/
 	
 	  /*======== char * strip(char * args, char sign) ==========
@@ -124,12 +131,6 @@
 	Returns: N/A
 	Create a file to write, truncate, and creat and write to stdout and read from stdin if firstsign is > and then execute the command in args
 	Create a file to write, truncate, and creat and write to stdout and read from stdin and to determine which one to read from and which one to read to depends on firstsign and then execute the command in args
-	====================*/
-
-  	 /*======== hybridRedirect(char * args, char sign) ==========
-	Inputs:  char * args, char * sign
-	Returns: N/A
-	Create a file to write, truncate, and creat and write to stdout if sign is > and then perform the piping in args
 	====================*/
 
 	   /*======== int isRedirect(char * args) ==========
