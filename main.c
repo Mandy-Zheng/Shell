@@ -24,11 +24,12 @@ int main(int argc, char const *argv[]) {
   while(keepRunning){
     set_color(Cyan);
     getcwd(dir_path,sizeof(dir_path));
-    printf("%s ",dir_path);
+    printf("\n%s ",dir_path);
     set_color(Pink);
     printf("$ ");
     set_color(White);
     fgets(args, 1000, stdin);
+    fflush(stdout);
     if(args[0] !='\n'){ //error handling for Empty Enter
       args[strlen(args)-1]='\0';
       commandmulti=parseMulti(args, ";");
@@ -48,6 +49,7 @@ int main(int argc, char const *argv[]) {
             }
         }
     }
+
   }
   free(args);
   free(command);
