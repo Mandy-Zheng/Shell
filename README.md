@@ -18,7 +18,7 @@
 ######  -Can put additional spaces before, after and even in the middle of flagged commands (e.g. "  ls    -a   ")
 ######  -Error handling/Simulating Bash Behavior (Handling Ctrl+c, Enter Key)
 ######  - >> redirection works
-######  -Using any two of >> < > combo together works 
+######  -Using < > combo together works 
 ######  -infinite piping works
 
 #### Additional Features we tried to implement:
@@ -28,6 +28,7 @@
 ###### - ~
 ###### - alias
 ###### - Doing piping and redirect (e.g. ls | wc > inputfile)
+###### - Doing >> and > or >> and <
 #### Persisting Bugs in our program:
 
 #### Files and headers for all functions:
