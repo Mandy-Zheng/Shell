@@ -19,7 +19,6 @@
 ######  -Error handling/Simulating Bash Behavior (Handling Ctrl+c, Enter Key)
 ######  - >> redirection works
 ######  -Two simple redirection together works :  xxx > yyy < zzz and xxx< yyy >zzz
-######  -Pipe and simple redirection combo works (e.g. ls | wc > inputfile)
 ######  -infinite piping works
 
 #### Additional Features we tried to implement:
@@ -28,10 +27,38 @@
 - "cd;"
 - ~
 - alias
+- Doing piping and redirect (e.g. ls | wc > inputfile)
 #### Persisting Bugs in our program:
 
-#### Headers for all functions:
-##### Shell.c Handles all functions for the Shell
+#### Files and headers for all functions:
+
+##### shell.c Has functions dealing with directory, cd, and executing commands
+	/*======== void executing(char ** command, int * keepRunning) ==========
+	Inputs:  char ** command, int * keepRunning
+	Returns: N/A
+	Executes command given by command and prints command not found if invalid command
+	If command is to exit, turn keeprunning to 0 (false)
+	====================*/
+	
+		 /*======== void set_color(unsigned char color) ==========
+	Inputs:  char * args, char * sign
+	Returns: N/A
+	changes color of text to the one dictated by unsigned char color
+	====================*/
+
+	/*======== int isChangeDirectory(char ** command) ==========
+	Inputs:  char ** command
+	Returns: 1 if the command is cd, 0 otherwise
+	Checks if the first element of the command list is "cd"
+	====================*/
+
+	/*======== void changeDirectory(char ** command) ==========
+	Inputs:  char ** command
+	Returns: N/A
+	Uses chdir to change change directory
+	Uses lengthArgs(command) and chdir's return value to return appropriate error messages
+	====================*/
+##### parse.c Has functions dealing with parsing arguments/inputs
 	/*======== int lengthArgs(char ** command) ==========
 	Inputs:  char ** command
 	Returns: Number of Char * in command
@@ -40,20 +67,45 @@
 	add one to the length
 	Once it exits loop return the length
 	====================*/
-
-	/*======== void executing(char ** command, int * keepRunning) ==========
-	Inputs:  char ** command, int * keepRunning
-	Returns: N/A
-	Executes command given by command and prints command not found if invalid command
-	If command is to exit, turn keeprunning to 0 (false)
-	====================*/
-
+	
 	/*======== char ** parseMulti(char * args,char * sign) ==========
 	Inputs:  char * args, char * sign
 	Returns: returns a list of strings that are split from args based on sign
 	Keep on strseping untill the token is null and also strip each element of trailing white spaces. If the length of the element is 0, set the slot to Null, and don't advance the loop.
 	====================*/
+	
+	  /*======== char * strip(char * args, char sign) ==========
+	Inputs:  char * args, char * sign
+	Returns: returns a string without leading leading character sign
+	Moves down the characters of the array until the first character is not sign
+	====================*/
 
+  	  /*======== char * truncs(char * args, char sign) ==========
+	Inputs:  char * args, char * sign
+	Returns: returns a string without trailing character sign
+	Adds terminating string character while looping from the back of the string if the character equals sign
+	====================*/
+	
+##### pipe.c Has functions dealing with piping
+
+	/*======== int isPipe(char * command) ==========
+	Inputs:  char * command
+	Returns: 1 if the command is an only | command, 0 otherwise
+	Loops through the command in search of a |
+	If an | exists, parse the string by | using parseMulti
+	If the command has multiple |s, parse all commands except the last one into one command
+	Pass the commands into performPipe
+	====================*/
+
+	/*======== void performPipe(char * command1, char * command2); ==========
+	Inputs:  char * command1, char * command2
+	Returns: N/A
+	Uses popen() to open the first command in reading mode
+	Use popen to open the second command in writing mode
+	Use fgets to read the first command's file output and write it in as the second command's input 
+	====================*/
+
+##### redirect.c Has functions dealing with redirect
 	 /*======== void simpleRedirect(char * args,char sign) ==========
 	Inputs:  char * args, char * sign
 	Returns: N/A
@@ -85,51 +137,21 @@
 	Returns: 1 if there was sometype of redirection in the command or 0 if there was none
 	Depending on what signs are in args (e.g. >, <, >>...), it calls on the appropriate function to execute the correct redirection
 	====================*/
-
-	   /*======== char * strip(char * args, char sign) ==========
-	Inputs:  char * args, char * sign
-	Returns: returns a string without leading leading character sign
-	Moves down the characters of the array until the first character is not sign
+	
+	 /*======== int isRedirect(char * args) ==========
+	Inputs:  char * args
+	Returns: 1 if there was sometype of redirection in the command or 0 if there was none
+	Depending on what signs are in args (e.g. >, <, >>...), it calls on the appropriate function to execute the correct redirection
 	====================*/
-
-  	  /*======== char * truncs(char * args, char sign) ==========
-	Inputs:  char * args, char * sign
-	Returns: returns a string without trailing character sign
-	Adds terminating string character while looping from the back of the string if the character equals sign
-	====================*/
-
-  	 /*======== void set_color(unsigned char color) ==========
-	Inputs:  char * args, char * sign
+	
+	 /*======== void saveRedirect(int* redirects) ==========
+	Inputs: int* redirects
 	Returns: N/A
-	changes color of text to the one dictated by unsigned char color
+	Saves STDIN_FILENO,STDOUT_FILENO,STDERR_FILENO to restore file stream later
 	====================*/
-
-	/*======== int isChangeDirectory(char ** command) ==========
-	Inputs:  char ** command
-	Returns: 1 if the command is cd, 0 otherwise
-	Checks if the first element of the command list is "cd"
-	====================*/
-
-	/*======== void changeDirectory(char ** command) ==========
-	Inputs:  char ** command
+	
+	 /*======== void restoreRedirect(int* redirects) ==========
+	Inputs: int* redirects
 	Returns: N/A
-	Uses chdir to change change directory
-	Uses lengthArgs(command) and chdir's return value to return appropriate error messages
-	====================*/
-
-	/*======== int isPipe(char * command) ==========
-	Inputs:  char * command
-	Returns: 1 if the command is an only | command, 0 otherwise
-	Loops through the command in search of a |
-	If an | exists, parse the string by | using parseMulti
-	If the command has multiple |s, parse all commands except the last one into one command
-	Pass the commands into performPipe
-	====================*/
-
-	/*======== void performPipe(char * command1, char * command2); ==========
-	Inputs:  char * command1, char * command2
-	Returns: N/A
-	Uses popen() to open the first command in reading mode
-	Use popen to open the second command in writing mode
-	Use fgets to read the first command's file output and write it in as the second command's input 
+	restore STDIN_FILENO,STDOUT_FILENO,STDERR_FILENO file stream
 	====================*/
