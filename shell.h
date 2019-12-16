@@ -27,4 +27,3 @@ void complexRedirect(char * args,char sign);
 void transitiveRedirect(char * args, char sign);
 char * truncs(char * args, char sign);
 void hybridRedirect(char * args, char sign);
-int performPipeRecursive(char ** command, int lengthArgs);

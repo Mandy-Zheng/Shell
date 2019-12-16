@@ -225,39 +225,30 @@ int isRedirect(char * args){
 int isPipe(char * command){
   char ** parsedCommand;
   int run = 0;
-  for (size_t i = 0; i < strlen(command); i++) {
+  for (size_t i = 0; i < strlen(command) ; i++) {
     if(command[i] == '|'){
-      printf("%s\n",command);
       parsedCommand = parseMulti(command, "|");
-      //printf("%s    f\n", parsedCommand[1]);
-      performPipeRecursive(parsedCommand,lengthArgs(parsedCommand));
+      char pipeFirst[1000];
+      strcpy(pipeFirst,parsedCommand[0]);
+      for (size_t j = 1; j < lengthArgs(parsedCommand)-1; j++) {
+        strcat(pipeFirst," | ");
+        strcat(pipeFirst,parsedCommand[j]);
+      }
+      performPipe(pipeFirst,parsedCommand[lengthArgs(parsedCommand)-1]);
       return 1;
     }
   }
   return 0;
 }
 
-int performPipeRecursive(char ** command, int numArgs){
-  if (numArgs < 2){
-    return 1;
-  } else{
-    performPipe(command[lengthArgs(command)-numArgs],command[lengthArgs(command)-numArgs+1]);
-    return performPipeRecursive(command,numArgs-1);
-  }
-}
 int performPipe(char * command1, char * command2){
     FILE * read;
     FILE * write;
     char transfer[1028][1028];
-
-    read= popen(command1,"r");
-    // if( p == NULL)
-    // {
-    //     printf("%s\n", );("Unable to open process");
-    //     return 1;
-    // }
     int stop = 0;
     int length = 0;
+
+    read= popen(command1,"r");
     for (size_t i = 0; !stop; i++) {
       if (fgets(transfer[i],sizeof(transfer[i]),read) == NULL){
         stop = 1;
@@ -267,6 +258,11 @@ int performPipe(char * command1, char * command2){
       }
     }
     pclose(read);
+    // if( p == NULL)
+    // {
+    //     printf("%s\n", );("Unable to open process");
+    //     return 1;
+    // }
     write = popen(command2,"w");
     for (size_t i = 0; i < length; i++) {
       fprintf(write, "%s", transfer[i]);

@@ -36,12 +36,12 @@ int main(int argc, char const *argv[]) {
                 if(!isRedirect(args)){
                   if(!isPipe(commandmulti[i])){
                     executing(command,&keepRunning);
-                    inTerminal = 1;
-               }
-             }
-          }
+                  }
+                }
+              }
+              inTerminal = 1;
+            }
         }
-      }
     }
   }
   return 0;
