@@ -25,7 +25,7 @@ int performPipe(char * command1, char * command2);
 char * strip(char * args, char sign);
 void set_color(unsigned char color);
 void complexRedirect(char * args,char sign);
-void transitiveRedirect(char * args, char sign);
+void transitiveRedirect(char * args, char firstsign);
 char * truncs(char * args, char sign);
 void hybridRedirect(char * args, char sign);
 int performPipeRecursive(char ** command, int lengthArgs);

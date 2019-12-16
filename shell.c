@@ -81,7 +81,7 @@ void transitiveRedirect(char * args, char firstsign){
       char ** commandsecond=parseMulti(commandfirst[1], "<");
       commandsecond[0]=truncs(strip(commandsecond[0],' '),' ');
       commandsecond[1]=truncs(strip(commandsecond[1],' '),' ');
-      int into = open(commandsecond[0],O_WRONLY | O_CREAT, 0644);
+      int into = open(commandsecond[0],O_WRONLY | O_TRUNC |O_CREAT, 0644);
       int from = open(commandsecond[1],O_RDONLY,0644);
       dup2(into, STDOUT_FILENO);
       dup2(from, STDIN_FILENO);
@@ -122,7 +122,7 @@ void hybridRedirect(char * args, char sign){
   command2[0]=truncs(strip(command2[0],' '),' ');
   command2[1]=truncs(strip(command2[1],' '),' ');
   if(fork()==0){
-    int into = open(command2[1],O_WRONLY | O_CREAT, 0644);
+    int into = open(command2[1],O_WRONLY | O_TRUNC | O_CREAT, 0644);
     dup2(into,STDOUT_FILENO);
     performPipe(command[0],command2[0]);
   }
