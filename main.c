@@ -16,6 +16,8 @@ static void sighandler(int signo){
 int main(int argc, char const *argv[]) {
   char * args=calloc(sizeof(char),1000);
   char dir_path[512];
+  char ** commandmulti;
+  char ** command;
   signal(SIGINT,sighandler);
   while(keepRunning){
     set_color(Cyan);
@@ -25,24 +27,27 @@ int main(int argc, char const *argv[]) {
     printf("$ ");
     set_color(White);
     fgets(args, 1000, stdin);
-    if(args[0] !='\n'){
+    if(args[0] !='\n'){ //error handling for Empty Enter
       args[strlen(args)-1]='\0';
-      char ** commandmulti=parseMulti(args, ";");
-        if(lengthArgs(commandmulti)>0){
+      commandmulti=parseMulti(args, ";");
+        if(lengthArgs(commandmulti)>0){ //if commands exist
             for (size_t i =0 ; i< lengthArgs(commandmulti) && keepRunning;i++){
-              if(strlen(commandmulti[i])>0){
-                char ** command = parse(commandmulti[i]);
-                inTerminal = 0;
+              if(strlen(commandmulti[i])>0){ //if command exists
+                command = parse(commandmulti[i]);
+                inTerminal = 0; //entering command, leaving shell
                 if(!isRedirect(args)){
                   if(!isPipe(commandmulti[i])){
-                    executing(command,&keepRunning);
+                    executing(command,&keepRunning); //if it's not a pipe or redirect, execute it normally
                   }
                 }
               }
-              inTerminal = 1;
+              inTerminal = 1;//leaving command, entering shell
             }
         }
     }
   }
+  free(args);
+  free(command);
+  free(commandmulti);
   return 0;
 }
