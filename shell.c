@@ -107,7 +107,7 @@ void transitiveRedirect(char * args, char firstsign){
       int into = open(strip(commandsecond[1],' '),O_WRONLY | O_TRUNC | O_CREAT, 0644);
       int from = open(strip(commandsecond[0],' '),O_RDONLY,0644);
       if (into!=0){
-        sighandler(3);
+        printf("%s\n",strerror(from));
       }else if(from !=0){
         printf("%s\n",strerror(from));
       }else{
