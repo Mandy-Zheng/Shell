@@ -21,6 +21,7 @@ int isPipe(char * command){
         strcat(pipeFirst,parsedCommand[j]);
       }
       performPipe(pipeFirst,parsedCommand[lengthArgs(parsedCommand)-1]);
+      free(parsedCommand);
       return 1;
     }
   }

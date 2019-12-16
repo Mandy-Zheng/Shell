@@ -70,6 +70,7 @@ void simpleRedirect(char * args,char sign){
   }else{
     wait(NULL);
   }
+  free(command);
 }
 
 /*======== void transitiveRedirect(char * args, char sign) ==========
@@ -116,6 +117,7 @@ void transitiveRedirect(char * args, char firstsign){
   }else{
     wait(NULL);
   }
+  free(commandfirst);
 }
 
 /*======== void complexRedirect(char * args,char sign) ==========
@@ -139,6 +141,7 @@ void complexRedirect(char * args,char sign){
       wait(NULL);
     }
   }
+  free(command);
 }
 
 /*======== void saveRedirect(int* redirects) ==========
