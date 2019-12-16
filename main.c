@@ -22,12 +22,14 @@ int main(int argc, char const *argv[]) {
   char ** command;
   signal(SIGINT,sighandler);
   while(keepRunning){
-    set_color(Cyan);
-    getcwd(dir_path,sizeof(dir_path));
-    printf("\n%s ",dir_path);
-    set_color(Pink);
-    printf("$ ");
-    set_color(White);
+    if (isatty(STDIN_FILENO)) {
+       set_color(Cyan);
+       getcwd(dir_path,sizeof(dir_path));
+       printf("\n%s ",dir_path);
+       set_color(Pink);
+       printf("$ ");
+       set_color(White);
+     }
     fgets(args, 1000, stdin);
     fflush(stdout);
     if(args[0] !='\n'){ //error handling for Empty Enter
