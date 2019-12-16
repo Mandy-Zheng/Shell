@@ -1,5 +1,10 @@
 #include "shell.h"
 
+/*======== int isRedirect(char * args) ==========
+Inputs:  char * args
+Returns: 1 if there was sometype of redirection in the command or 0 if there was none
+Depending on what signs are in args (e.g. >, <, >>...), it calls on the appropriate function to execute the correct redirection
+====================*/
 int isRedirect(char * args){
   int count=0;
   int pipe = 0;
@@ -33,6 +38,12 @@ int isRedirect(char * args){
   return 0;
 }
 
+/*======== void simpleRedirect(char * args,char sign) ==========
+Inputs:  char * args, char * sign
+Returns: N/A
+Create a file to write, truncate, and create and write to stdout if sign is > and then execute the command in args
+Create a file to read into stdin if the sign is < and execute the command in args
+====================*/
 void simpleRedirect(char * args,char sign){
   char ** command = parseMulti(args,&sign);
   if(fork()==0){
@@ -61,6 +72,12 @@ void simpleRedirect(char * args,char sign){
   }
 }
 
+/*======== void transitiveRedirect(char * args, char sign) ==========
+Inputs:  char * args, char * sign
+Returns: N/A
+Create a file to write, truncate, and creat and write to stdout and read from stdin if firstsign is > and then execute the command in args
+Create a file to write, truncate, and creat and write to stdout and read from stdin and to determine which one to read from and which one to read to depends on firstsign and then execute the command in args
+====================*/
 void transitiveRedirect(char * args, char firstsign){
   char ** commandfirst = parseMulti(args,&firstsign);
   if(fork()==0){
@@ -101,7 +118,11 @@ void transitiveRedirect(char * args, char firstsign){
   }
 }
 
-
+/*======== void complexRedirect(char * args,char sign) ==========
+Inputs:  char * args, char * sign
+Returns: N/A
+Create a file to write, append, and create and write to stdout if sign is > and then execute the command in args
+====================*/
 void complexRedirect(char * args,char sign){
   char ** command = parseMulti(args,">>");
   if(sign=='>'){
@@ -118,4 +139,29 @@ void complexRedirect(char * args,char sign){
       wait(NULL);
     }
   }
+}
+
+/*======== void saveRedirect(int* redirects) ==========
+Inputs: int* redirects
+Returns: N/A
+Saves STDIN_FILENO,STDOUT_FILENO,STDERR_FILENO to restore file stream later
+====================*/
+void saveRedirect(int* redirects) {
+  redirects[0] = dup(STDIN_FILENO);
+  redirects[1] = dup(STDOUT_FILENO);
+  redirects[2] = dup(STDERR_FILENO);
+}
+
+/*======== void restoreRedirect(int* redirects) ==========
+Inputs: int* redirects
+Returns: N/A
+restore STDIN_FILENO,STDOUT_FILENO,STDERR_FILENO file stream
+====================*/
+void restoreRedirect(int* redirects) {
+  dup2(redirects[0], STDIN_FILENO);
+  dup2(redirects[1], STDOUT_FILENO);
+  dup2(redirects[2], STDERR_FILENO);
+  close(redirects[0]);
+  close(redirects[1]);
+  close(redirects[2]);
 }
